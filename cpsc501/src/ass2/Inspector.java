@@ -6,6 +6,9 @@ public class Inspector {
 	private Field[] fieldsToInspect;
 	
 	public void inspect(Object obj, boolean recursive) {
+		if (obj == null)
+			return;
+		
 		Class classObj = obj.getClass();
 		System.out.println("**********************************************");
 		
@@ -52,9 +55,18 @@ public class Inspector {
 
 	private void printFields(Class classObj) {
 		fieldsToInspect = classObj.getDeclaredFields();
-		Class fClass;
+		
 		System.out.println("Fields:");
-
+		
+		if (fieldsToInspect.length == 0) {
+			System.out.println("No fields.");
+		} else {
+			for (Field field : fieldsToInspect) {
+				System.out.println("* " + Modifier.toString(field.getModifiers()) + " " + field.getType().getSimpleName() + " " + field.getName() + " ");
+			}
+		}
+		
+		
 		System.out.println();
 		System.out.println("**********************************************");
 	}

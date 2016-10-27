@@ -3,7 +3,7 @@ package ass2test;
 import java.io.IOException;
 
 public class TestTarget {
-	String message;
+	private String message;
 
 	public TestTarget() {
 		message = "default";
