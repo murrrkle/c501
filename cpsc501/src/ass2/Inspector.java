@@ -3,7 +3,6 @@ package ass2;
 import java.lang.reflect.*;
 
 public class Inspector {
-	private Field[] fieldsToInspect;
 
 	public void inspect(Object obj, boolean recursive) {
 		if (obj == null)
@@ -11,6 +10,16 @@ public class Inspector {
 
 		try {
 			printInfo(obj);
+			if (recursive) {
+				if (obj.getClass().getDeclaredFields().length == 0) {
+					return;
+				} else {
+					for (Field f : obj.getClass().getDeclaredFields()) {
+						f.setAccessible(true);
+						inspect(f.get(obj), true);
+					}
+				}
+			}
 		} catch (IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
@@ -70,7 +79,7 @@ public class Inspector {
 		System.out.println("│                   Fields                   │");
 		System.out.println("┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙");
 
-		fieldsToInspect = classObj.getDeclaredFields();
+		Field[] fieldsToInspect = classObj.getDeclaredFields();
 
 		if (fieldsToInspect.length == 0) {
 			System.out.println("No fields.");
