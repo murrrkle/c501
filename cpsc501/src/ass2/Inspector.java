@@ -9,9 +9,11 @@ public class Inspector {
 		if (obj == null)
 			return;
 
-		Class classObj = obj.getClass();
-
-		printInfo(classObj);
+		try {
+			printInfo(obj);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
 
 		// if (recursive && fieldsToInspect.length != 0) {
 		// for (Field field : fieldsToInspect) {
@@ -22,10 +24,11 @@ public class Inspector {
 		// }
 	}
 
-	private void printInfo(Class classObj) {
+	private void printInfo(Object obj) throws IllegalArgumentException, IllegalAccessException {
+		Class classObj = obj.getClass();
 		printClassName(classObj);
 		printInterfaces(classObj);
-		printFields(classObj);
+		printFields(classObj, obj);
 		printConstructorsInformation(classObj);
 		printMethodInformation(classObj);
 	}
@@ -38,6 +41,7 @@ public class Inspector {
 		System.out.println("Class Name: " + classObj.getSimpleName());
 		System.out.println("Declaring Class Name: " + classObj.getDeclaringClass());
 		System.out.println("Immediate Superclass: " + classObj.getSuperclass().getName());
+		System.out.println();
 	}
 
 	private void printInterfaces(Class classObj) {
@@ -49,29 +53,50 @@ public class Inspector {
 		System.out.println("Implemented Interfaces: ");
 		if (interfaces.length == 0) {
 			System.out.println("No implemented interfaces.");
+			return;
 		}
+
 		for (Class i : interfaces) {
 			System.out.println("> " + i.getName() + " ");
 		}
+
+		System.out.println();
 	}
 
-	private void printFields(Class classObj) {
+	private void printFields(Class classObj, Object obj) throws IllegalArgumentException, IllegalAccessException {
 		System.out.println("┍━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑");
 		System.out.println("│                   Fields                   │");
 		System.out.println("┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙");
 
 		fieldsToInspect = classObj.getDeclaredFields();
 
-		System.out.println("Fields:");
-
 		if (fieldsToInspect.length == 0) {
 			System.out.println("No fields.");
-		} else {
-			for (Field field : fieldsToInspect) {
-				System.out.println("> " + Modifier.toString(field.getModifiers()) + " "
-						+ field.getType().getSimpleName() + " " + field.getName() + " ");
+			return;
+		}
 
-			}
+		for (Field field : fieldsToInspect) {
+			field.setAccessible(true);
+			System.out.println("Field Name: " + field.getName());
+
+			int modifiers = field.getModifiers();
+			System.out.println("Field Modifiers: " + Modifier.toString(modifiers));
+
+			System.out.println("Field Type: " + field.getType().getSimpleName());
+
+			if (field.getType().isArray()) {
+				Object fArray = field.get(obj);
+ 				System.out.println("Array Length: " + Array.getLength(fArray));
+ 				System.out.print("Array Contents: [");
+ 				for (int i = 0; i < Array.getLength(fArray) - 1; i++) {
+ 					System.out.print(Array.get(fArray, i) + ", ");
+ 				}
+ 				System.out.println(Array.get(fArray, Array.getLength(fArray) - 1) + "]");
+ 				
+ 			} else 
+ 				System.out.println("Field Value: " + field.get(obj));
+
+			System.out.println("\n┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄\n");
 		}
 	}
 
@@ -94,6 +119,7 @@ public class Inspector {
 			Class[] parameterList = constructor.getParameterTypes();
 			System.out.println("Constructor Parameter Types: ");
 			if (parameterList.length == 0) {
+				System.out.println();
 				System.out.println("No parameters.");
 			} else {
 				for (Class p : parameterList) {
@@ -113,7 +139,7 @@ public class Inspector {
 					System.out.println("> " + e.getName() + " ");
 				}
 			}
-			System.out.println("\n==============================================\n");
+			System.out.println("\n┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄\n");
 		}
 	}
 
@@ -127,6 +153,7 @@ public class Inspector {
 			System.out.println("No methods.");
 			return;
 		}
+
 		for (Method m : methods) {
 			System.out.println("Method Name: " + m.getName());
 
@@ -134,6 +161,7 @@ public class Inspector {
 
 			int modifiers = m.getModifiers();
 			System.out.println("Method Modifiers: " + Modifier.toString(modifiers));
+			System.out.println();
 
 			Class[] parameterList = m.getParameterTypes();
 			System.out.println("Method Parameter Types: ");
@@ -158,7 +186,7 @@ public class Inspector {
 				}
 			}
 
-			System.out.println("\n==============================================\n");
+			System.out.println("\n┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄\n");
 		}
 	}
 }
