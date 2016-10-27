@@ -3,31 +3,45 @@ package ass2;
 import java.lang.reflect.*;
 
 public class Inspector {
+	private Field[] fieldsToInspect;
+	
 	public void inspect(Object obj, boolean recursive) {
 		Class classObj = obj.getClass();
 		System.out.println("**********************************************");
+		
+		printInfo(classObj);
+		
+		if (recursive) {
+
+		} else {
+			
+		}
+	}
+	
+	private void printInfo(Class classObj) {
 		printClassName(classObj);
 		printInterfaces(classObj);
-		printFields(classObj, recursive);
+		printFields(classObj);
 		printConstructorsInformation(classObj);
 		printMethodInformation(classObj);
 	}
-
-
 
 	private void printClassName(Class classObj) {
 		System.out.println("Full Class Name: " + classObj.getName());
 		System.out.println("Class Name: " + classObj.getSimpleName());
 		System.out.println("Immediate Superclass: " + classObj.getSuperclass().getName());
-		
+
 		System.out.println();
 		System.out.println("**********************************************");
 	}
-	
+
 	private void printInterfaces(Class classObj) {
-		
+
 		Class[] interfaces = classObj.getInterfaces();
 		System.out.println("Implemented Interfaces: ");
+		if (interfaces.length == 0) {
+			System.out.println("No implemented interfaces.");
+		}
 		for (Class i : interfaces) {
 			System.out.println("* " + i.getName() + " ");
 		}
@@ -35,15 +49,21 @@ public class Inspector {
 		System.out.println();
 		System.out.println("**********************************************");
 	}
-	
-	private void printFields(Class classObj, boolean recursive) {
-		
+
+	private void printFields(Class classObj) {
+		fieldsToInspect = classObj.getDeclaredFields();
+		Class fClass;
+		System.out.println("Fields:");
+
+		System.out.println();
+		System.out.println("**********************************************");
 	}
-
-
 
 	private void printConstructorsInformation(Class classObj) {
 		Constructor[] constructors = classObj.getConstructors();
+		if (constructors.length == 0) {
+			System.out.println("No constructors.");
+		}
 
 		for (Constructor constructor : constructors) {
 			System.out.println("Constructor name: " + constructor.getName());
@@ -53,8 +73,12 @@ public class Inspector {
 
 			Class[] parameterList = constructor.getParameterTypes();
 			System.out.println("Constructor parameter types: ");
-			for (Class p : parameterList) {
-				System.out.println("* " + p.getName() + " ");
+			if (parameterList.length == 0) {
+				System.out.println("No parameters.");
+			} else {
+				for (Class p : parameterList) {
+					System.out.println("* " + p.getName() + " ");
+				}
 			}
 
 			System.out.println();
@@ -62,9 +86,12 @@ public class Inspector {
 			Class[] exceptionList = constructor.getExceptionTypes();
 			System.out.println("Exceptions thrown by constructor: ");
 
-			for (Class e : exceptionList) {
-				System.out.println("* " + e.getName() + " ");
-
+			if (exceptionList.length == 0) {
+				System.out.println("No thrown exceptions.");
+			} else {
+				for (Class e : exceptionList) {
+					System.out.println("* " + e.getName() + " ");
+				}
 			}
 
 			System.out.println();
@@ -76,6 +103,9 @@ public class Inspector {
 	private void printMethodInformation(Class classObj) {
 
 		Method[] methods = classObj.getDeclaredMethods();
+		if (methods.length == 0) {
+			System.out.println("No methods.");
+		}
 		for (Method m : methods) {
 			System.out.println("method name: " + m.getName());
 
@@ -86,8 +116,12 @@ public class Inspector {
 
 			Class[] parameterList = m.getParameterTypes();
 			System.out.println("method parameter types: ");
-			for (Class p : parameterList) {
-				System.out.println("* " + p.getName() + " ");
+			if (parameterList.length == 0) {
+				System.out.println("No parameters.");
+			} else {
+				for (Class p : parameterList) {
+					System.out.println("* " + p.getName() + " ");
+				}
 			}
 
 			System.out.println();
@@ -95,9 +129,12 @@ public class Inspector {
 			Class[] exceptionList = m.getExceptionTypes();
 			System.out.println("Exceptions thrown by method: ");
 
-			for (Class e : exceptionList) {
-				System.out.println("* " + e.getName() + " ");
-
+			if (exceptionList.length == 0) {
+				System.out.println("No thrown exceptions.");
+			} else {
+				for (Class e : exceptionList) {
+					System.out.println("* " + e.getName() + " ");
+				}
 			}
 
 			System.out.println();
