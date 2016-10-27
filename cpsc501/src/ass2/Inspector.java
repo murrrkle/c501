@@ -33,7 +33,7 @@ public class Inspector {
 		printMethodInformation(classObj);
 	}
 
-	private void printClassName(Class classObj) {
+	private boolean printClassName(Class classObj) {
 		System.out.println("┍━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑");
 		System.out.println("│                 Class Name                 │");
 		System.out.println("┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙");
@@ -42,9 +42,10 @@ public class Inspector {
 		System.out.println("Declaring Class Name: " + classObj.getDeclaringClass());
 		System.out.println("Immediate Superclass: " + classObj.getSuperclass().getName());
 		System.out.println();
+		return true;
 	}
 
-	private void printInterfaces(Class classObj) {
+	private boolean printInterfaces(Class classObj) {
 		System.out.println("┍━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑");
 		System.out.println("│                 Interfaces                 │");
 		System.out.println("┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙");
@@ -53,7 +54,7 @@ public class Inspector {
 		System.out.println("Implemented Interfaces: ");
 		if (interfaces.length == 0) {
 			System.out.println("No implemented interfaces.");
-			return;
+			return false;
 		}
 
 		for (Class i : interfaces) {
@@ -61,9 +62,10 @@ public class Inspector {
 		}
 
 		System.out.println();
+		return true;
 	}
 
-	private void printFields(Class classObj, Object obj) throws IllegalArgumentException, IllegalAccessException {
+	private boolean printFields(Class classObj, Object obj) throws IllegalArgumentException, IllegalAccessException {
 		System.out.println("┍━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑");
 		System.out.println("│                   Fields                   │");
 		System.out.println("┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙");
@@ -72,7 +74,7 @@ public class Inspector {
 
 		if (fieldsToInspect.length == 0) {
 			System.out.println("No fields.");
-			return;
+			return false;
 		}
 
 		for (Field field : fieldsToInspect) {
@@ -86,28 +88,33 @@ public class Inspector {
 
 			if (field.getType().isArray()) {
 				Object fArray = field.get(obj);
- 				System.out.println("Array Length: " + Array.getLength(fArray));
- 				System.out.print("Array Contents: [");
- 				for (int i = 0; i < Array.getLength(fArray) - 1; i++) {
- 					System.out.print(Array.get(fArray, i) + ", ");
- 				}
- 				System.out.println(Array.get(fArray, Array.getLength(fArray) - 1) + "]");
- 				
- 			} else 
- 				System.out.println("Field Value: " + field.get(obj));
+				System.out.println("Array Length: " + Array.getLength(fArray));
+				if (Array.getLength(fArray) == 0)
+					System.out.println("Array Contents: []");
+				else {
+
+					System.out.print("Array Contents: [");
+					for (int i = 0; i < Array.getLength(fArray) - 1; i++) {
+						System.out.print(Array.get(fArray, i) + ", ");
+					}
+					System.out.println(Array.get(fArray, Array.getLength(fArray) - 1) + "]");
+				}
+			} else
+				System.out.println("Field Value: " + field.get(obj));
 
 			System.out.println("\n┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄\n");
 		}
+		return true;
 	}
 
-	private void printConstructorsInformation(Class classObj) {
+	private boolean printConstructorsInformation(Class classObj) {
 		System.out.println("┍━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑");
 		System.out.println("│                Constructors                │");
 		System.out.println("┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙");
 		Constructor[] constructors = classObj.getConstructors();
 		if (constructors.length == 0) {
 			System.out.println("No Constructors.");
-			return;
+			return false;
 		}
 
 		for (Constructor constructor : constructors) {
@@ -141,9 +148,10 @@ public class Inspector {
 			}
 			System.out.println("\n┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄\n");
 		}
+		return true;
 	}
 
-	private void printMethodInformation(Class classObj) {
+	private boolean printMethodInformation(Class classObj) {
 		System.out.println("┍━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑");
 		System.out.println("│                   Methods                  │");
 		System.out.println("┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙");
@@ -151,7 +159,7 @@ public class Inspector {
 		Method[] methods = classObj.getDeclaredMethods();
 		if (methods.length == 0) {
 			System.out.println("No methods.");
-			return;
+			return false;
 		}
 
 		for (Method m : methods) {
@@ -188,5 +196,6 @@ public class Inspector {
 
 			System.out.println("\n┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄\n");
 		}
+		return true;
 	}
 }
