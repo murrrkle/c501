@@ -65,31 +65,30 @@ public class Inspector {
 			return;
 		}
 
-		for (Field field : fieldsToInspect) {
+		for (Field f : fieldsToInspect) {
 
-			field.setAccessible(true);
-			int modifiers = field.getModifiers();
+			f.setAccessible(true);
+			int modifiers = f.getModifiers();
 
-			System.out.println("Field Name: " + field.getName());
+			System.out.println("Field Name: " + f.getName());
 			System.out.println("Field Modifiers: " + Modifier.toString(modifiers));
 
-			System.out.println("Field Type: " + field.getType().getSimpleName());
+			System.out.println("Field Type: " + f.getType().getSimpleName());
 
 			if (recursive) {
-				if (field.getType().isArray()) {
-					Object fArray = field.get(obj);
-					int fArrayLength = Array.getLength(fArray);
-					System.out.println("Array Length: " + fArrayLength);
+				if (f.getType().isArray()) {
+					Object fArray = f.get(obj);
+					System.out.println("Array Length: " + Array.getLength(fArray));
 					printArrayContents(fArray);
 				} else
-					System.out.println("Field Value: " + field.get(obj));
+					System.out.println("Field Value: " + f.get(obj));
 			} else 
-				System.out.println("Field Value: " + field.getClass() + "@" + field.get(obj).hashCode());
+				System.out.println("Field Value: " + f.getClass() + "@" + f.get(obj).hashCode());
 
 			printSeparator();
 
-			if (!field.getType().isPrimitive() && recursive)
-				inspect(field.get(obj), true);
+			if (!f.getType().isPrimitive() && recursive)
+				inspect(f.get(obj), true);
 		}
 
 		printSuperclassFields(classObj, obj, recursive);
@@ -103,35 +102,18 @@ public class Inspector {
 			return;
 		}
 
-		for (Constructor constructor : constructors) {
-			System.out.println("Constructor Name: " + constructor.getName());
+		for (Constructor c : constructors) {
+			System.out.println("Constructor Name: " + c.getName());
 
-			int modifiers = constructor.getModifiers();
+			int modifiers = c.getModifiers();
 			System.out.println("Constructor Modifiers: " + Modifier.toString(modifiers));
 
-			Class[] parameterList = constructor.getParameterTypes();
-			System.out.println("Constructor Parameter Types: ");
-			if (parameterList.length == 0) {
-				System.out.println();
-				System.out.println("No parameters.");
-			} else {
-				for (Class p : parameterList) {
-					System.out.println("> " + p.getName() + " ");
-				}
-			}
+			Class[] parameterList = c.getParameterTypes();
+			printParameters(parameterList);
 
 			System.out.println();
 
-			Class[] exceptionList = constructor.getExceptionTypes();
-			System.out.println("Thrown Exceptions: ");
-
-			if (exceptionList.length == 0) {
-				System.out.println("No thrown exceptions.");
-			} else {
-				for (Class e : exceptionList) {
-					System.out.println("> " + e.getName() + " ");
-				}
-			}
+			printExceptions(c.getExceptionTypes());
 			printSeparator();
 			printSuperclassConstructorsInformation(classObj);
 		}
@@ -156,28 +138,10 @@ public class Inspector {
 			System.out.println();
 
 			Class[] parameterList = m.getParameterTypes();
-			System.out.println("Method Parameter Types: ");
-			if (parameterList.length == 0) {
-				System.out.println("No parameters.");
-			} else {
-				for (Class p : parameterList) {
-					System.out.println("> " + p.getSimpleName() + " ");
-				}
-			}
+			printParameters(parameterList);
 
 			System.out.println();
-
-			Class[] exceptionList = m.getExceptionTypes();
-			System.out.println("Thrown Exceptions: ");
-
-			if (exceptionList.length == 0) {
-				System.out.println("No thrown exceptions.");
-			} else {
-				for (Class e : exceptionList) {
-					System.out.println("> " + e.getName() + " ");
-				}
-			}
-
+			printExceptions(m.getExceptionTypes());
 			printSeparator();
 		}
 		printSuperclassMethodInformation(classObj);
@@ -207,16 +171,8 @@ public class Inspector {
 				if (field.getType().isArray()) {
 					Object fArray = field.get(obj);
 					System.out.println("Array Length: " + Array.getLength(fArray));
-					if (Array.getLength(fArray) == 0)
-						System.out.println("Array Contents: []");
-					else {
-	
-						System.out.print("Array Contents: [");
-						for (int i = 0; i < Array.getLength(fArray) - 1; i++) {
-							System.out.print(Array.get(fArray, i) + ", ");
-						}
-						System.out.println(Array.get(fArray, Array.getLength(fArray) - 1) + "]");
-					}
+					printArrayContents(fArray);
+					
 				} else
 					System.out.println("Field Value: " + field.get(obj));
 	
@@ -244,28 +200,13 @@ public class Inspector {
 				System.out.println("Constructor Modifiers: " + Modifier.toString(modifiers));
 	
 				Class[] parameterList = constructor.getParameterTypes();
-				System.out.println("Constructor Parameter Types: ");
-				if (parameterList.length == 0) {
-					System.out.println();
-					System.out.println("No parameters.");
-				} else {
-					for (Class p : parameterList) {
-						System.out.println("> " + p.getName() + " ");
-					}
-				}
+				System.out.println("Parameter Types: ");
+				printParameters(parameterList);
 	
 				System.out.println();
 	
 				Class[] exceptionList = constructor.getExceptionTypes();
-				System.out.println("Thrown Exceptions: ");
-	
-				if (exceptionList.length == 0) {
-					System.out.println("No thrown exceptions.");
-				} else {
-					for (Class e : exceptionList) {
-						System.out.println("> " + e.getName() + " ");
-					}
-				}
+				printExceptions(exceptionList);
 				printSeparator();
 			}
 			printSuperclassConstructorsInformation(classObj);
@@ -290,27 +231,12 @@ public class Inspector {
 				System.out.println();
 	
 				Class[] parameterList = m.getParameterTypes();
-				System.out.println("Method Parameter Types: ");
-				if (parameterList.length == 0) {
-					System.out.println("No parameters.");
-				} else {
-					for (Class p : parameterList) {
-						System.out.println("> " + p.getSimpleName() + " ");
-					}
-				}
+				printParameters(parameterList);
 	
 				System.out.println();
 	
 				Class[] exceptionList = m.getExceptionTypes();
-				System.out.println("Thrown Exceptions: ");
-	
-				if (exceptionList.length == 0) {
-					System.out.println("No thrown exceptions.");
-				} else {
-					for (Class e : exceptionList) {
-						System.out.println("> " + e.getName() + " ");
-					}
-				}
+				printExceptions(exceptionList);
 	
 				printSeparator();
 			}
@@ -328,6 +254,29 @@ public class Inspector {
 				System.out.print(Array.get(arr, i) + ", ");
 			}
 			System.out.println(Array.get(arr, arrLength - 1) + "]");
+		}
+	}
+
+	private void printParameters(Class[] parameterList) {
+		System.out.println("Parameter Types: ");
+		if (parameterList.length == 0) {
+			System.out.println();
+			System.out.println("No parameters.");
+		} else {
+			for (Class p : parameterList) {
+				System.out.println("> " + p.getName() + " ");
+			}
+		}
+	}
+
+	private void printExceptions(Class[] exceptionList) {
+		System.out.println("Thrown Exceptions: ");
+		if (exceptionList.length == 0) {
+			System.out.println("No thrown exceptions.");
+		} else {
+			for (Class e : exceptionList) {
+				System.out.println("> " + e.getName() + " ");
+			}
 		}
 	}
 
