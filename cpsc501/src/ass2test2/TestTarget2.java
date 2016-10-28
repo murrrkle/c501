@@ -8,10 +8,12 @@ public class TestTarget2 extends TestTarget implements TestInterface{
 	private String message2;
 	private ArrayList<String> arr2;
 	protected boolean isTest2 = true;
+	private TestTarget tt;
 
 	public TestTarget2(String text) {
 		setMessage2(text);
 		setArr2(new ArrayList<String>());
+		tt = new TestTarget();
 	}
 
 	public String getMessage2() {

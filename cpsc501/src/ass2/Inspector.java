@@ -3,7 +3,6 @@ package ass2;
 import java.lang.reflect.*;
 
 public class Inspector {
-
 	public void inspect(Object obj, boolean recursive) {
 		if (obj == null)
 			return;
@@ -12,7 +11,7 @@ public class Inspector {
 			Class classObj = obj.getClass();
 			printInfo(classObj, obj, recursive);
 		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
-			e.printStackTrace();
+			System.out.println(e.getCause());
 		}
 	}
 
@@ -36,12 +35,10 @@ public class Inspector {
 	}
 
 	private void inspectClassNames(Class classObj) {
-
 		System.out.println("Full Class Name: " + classObj.getName());
 		System.out.println("Class Name: " + classObj.getSimpleName());
 		System.out.println("Declaring Class Name: " + classObj.getDeclaringClass());
-		if (!classObj.equals(Object.class))
-			System.out.println("Immediate Superclass: " + classObj.getSuperclass().getName());
+		System.out.println("Immediate Superclass: " + classObj.getSuperclass().getName());
 		System.out.println();
 	}
 
@@ -79,19 +76,19 @@ public class Inspector {
 	private void printFieldInfo(Object obj, boolean recursive, Field f) throws IllegalAccessException {
 		f.setAccessible(true);
 		int modifiers = f.getModifiers();
-	
+
 		System.out.println("Field Name: " + f.getName());
 		System.out.println("Declaring Class Name: " + f.getDeclaringClass().getName());
 		System.out.println("Field Modifiers: " + Modifier.toString(modifiers));
 		System.out.println("Field Type: " + f.getType().getSimpleName());
-	
+
 		if (recursive) {
 			printFieldValue(f, obj);
 		} else
 			printObjectReference(f, obj);
-	
+
 		printSeparator();
-	
+
 		if (!f.getType().isPrimitive() && recursive)
 			inspect(f.get(obj), true);
 	}
@@ -114,7 +111,7 @@ public class Inspector {
 
 		for (Constructor c : constructors)
 			printConstructorInfo(c);
-		
+
 		if (classObj.getSuperclass() != null)
 			inspectConstructors(classObj.getSuperclass());
 
@@ -122,15 +119,11 @@ public class Inspector {
 
 	private void printConstructorInfo(Constructor c) {
 		System.out.println("Constructor Name: " + c.getName());
-	
-		int modifiers = c.getModifiers();
-		System.out.println("Constructor Modifiers: " + Modifier.toString(modifiers));
-	
-		printParameters(c.getParameterTypes());
-	
+		System.out.println("Constructor Modifiers: " + Modifier.toString(c.getModifiers()));
+
 		System.out.println();
-	
-		printExceptions(c.getExceptionTypes());
+		printParameters(c.getParameterTypes());
+
 		printSeparator();
 	}
 
@@ -143,7 +136,7 @@ public class Inspector {
 
 		for (Method m : methods)
 			printMethodInfo(m);
-		
+
 		if (classObj.getSuperclass() != null)
 			inspectMethods(classObj.getSuperclass());
 	}
@@ -151,9 +144,9 @@ public class Inspector {
 	private void printMethodInfo(Method m) {
 		System.out.println("Method Name: " + m.getName());
 		System.out.println("Declaring Class Name: " + m.getDeclaringClass().getName());
+		System.out.println("Method Modifiers: " + Modifier.toString(m.getModifiers()));
 		System.out.println("Method Return Type: " + m.getReturnType().getSimpleName());
 
-		System.out.println("Method Modifiers: " + Modifier.toString(m.getModifiers()));
 		System.out.println();
 
 		printParameters(m.getParameterTypes());
@@ -182,7 +175,6 @@ public class Inspector {
 	private void printParameters(Class[] parameterList) {
 		System.out.println("Parameter Types: ");
 		if (parameterList.length == 0) {
-			System.out.println();
 			System.out.println("No parameters.");
 		} else {
 			for (Class p : parameterList) {

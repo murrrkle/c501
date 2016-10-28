@@ -26,7 +26,7 @@ public class InspectorTest {
 	@Test
 	public void constructorsSimpleTest1() {
 		
-		i.inspect(tt, false);
+		i.inspect(tt, true);
 	}
 
 }
