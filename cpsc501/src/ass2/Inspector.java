@@ -33,8 +33,50 @@ public class Inspector {
 		printClassName(classObj);
 		printInterfaces(classObj);
 		printFields(classObj, obj);
+		printSuperclassFields(classObj, obj);
 		printConstructorsInformation(classObj);
 		printMethodInformation(classObj);
+
+	}
+
+	private void printSuperclassFields(Class cObj, Object obj) throws IllegalArgumentException, IllegalAccessException {
+		if (cObj.getSuperclass() != null) {
+			Class classObj = cObj.getSuperclass();
+			Field[] fieldsToInspect = classObj.getDeclaredFields();
+
+			if (fieldsToInspect.length == 0) 
+				return;
+
+			for (Field field : fieldsToInspect) {
+
+				field.setAccessible(true);
+				int modifiers = field.getModifiers();
+
+				System.out.println("Field Name: " + field.getName());
+				System.out.println("Field Modifiers: " + Modifier.toString(modifiers));
+
+				System.out.println("Field Type: " + field.getType().getSimpleName());
+
+				if (field.getType().isArray()) {
+					Object fArray = field.get(obj);
+					System.out.println("Array Length: " + Array.getLength(fArray));
+					if (Array.getLength(fArray) == 0)
+						System.out.println("Array Contents: []");
+					else {
+
+						System.out.print("Array Contents: [");
+						for (int i = 0; i < Array.getLength(fArray) - 1; i++) {
+							System.out.print(Array.get(fArray, i) + ", ");
+						}
+						System.out.println(Array.get(fArray, Array.getLength(fArray) - 1) + "]");
+					}
+				} else
+					System.out.println("Field Value: " + field.get(obj));
+
+				System.out.println("\n┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄\n");
+			}
+			printSuperclassFields(classObj, obj);
+		}
 	}
 
 	private boolean printClassName(Class classObj) {
@@ -76,47 +118,16 @@ public class Inspector {
 		System.out.println("┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙");
 
 		Field[] fieldsToInspect = classObj.getDeclaredFields();
-		Field[] fields = classObj.getFields();
 
-		if (fieldsToInspect.length == 0 && fields.length == 0) {
-			System.out.println("No fields.");
+		if (fieldsToInspect.length == 0) {
+			System.out.println("No declared fields.");
 			return false;
-		}
-
-		for (Field field : fields) {
-			int modifiers = field.getModifiers();
-
-			System.out.println("Field Name: " + field.getName());
-			System.out.println("Field Declaring Class: " + field.getDeclaringClass().getName());
-			System.out.println("Field Modifiers: " + Modifier.toString(modifiers));
-
-			System.out.println("Field Type: " + field.getType().getSimpleName());
-
-			if (field.getType().isArray()) {
-				Object fArray = field.get(obj);
-				System.out.println("Array Length: " + Array.getLength(fArray));
-				if (Array.getLength(fArray) == 0)
-					System.out.println("Array Contents: []");
-				else {
-
-					System.out.print("Array Contents: [");
-					for (int i = 0; i < Array.getLength(fArray) - 1; i++) {
-						System.out.print(Array.get(fArray, i) + ", ");
-					}
-					System.out.println(Array.get(fArray, Array.getLength(fArray) - 1) + "]");
-				}
-			} else
-				System.out.println("Field Value: " + field.get(obj));
-
-			System.out.println("\n┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄\n");
 		}
 
 		for (Field field : fieldsToInspect) {
 
 			field.setAccessible(true);
 			int modifiers = field.getModifiers();
-			if (Modifier.isPublic(modifiers))
-				continue;
 
 			System.out.println("Field Name: " + field.getName());
 			System.out.println("Field Modifiers: " + Modifier.toString(modifiers));
@@ -234,5 +245,13 @@ public class Inspector {
 			System.out.println("\n┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄\n");
 		}
 		return true;
+	}
+	
+	private boolean hasField(Field[] fArr, Field f) {
+		for (Field field : fArr) {
+			if (field.getName().equals(f.getName()) && field.getModifiers() == f.getModifiers() && field.getDeclaringClass().equals(f.getDeclaringClass()))
+				return true;
+		}
+		return false;
 	}
 }
