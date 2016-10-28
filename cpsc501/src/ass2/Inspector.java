@@ -20,10 +20,10 @@ public class Inspector {
 			throws IllegalArgumentException, IllegalAccessException, InstantiationException {
 		printClassNameBanner();
 		inspectClassNames(classObj);
-		
+
 		printInterfacesBanner();
 		inspectInterfaces(classObj);
-		
+
 		printFieldsBanner();
 		inspectFields(classObj, obj, recursive);
 
@@ -36,7 +36,7 @@ public class Inspector {
 	}
 
 	private void inspectClassNames(Class classObj) {
-		
+
 		System.out.println("Full Class Name: " + classObj.getName());
 		System.out.println("Class Name: " + classObj.getSimpleName());
 		System.out.println("Declaring Class Name: " + classObj.getDeclaringClass());
@@ -71,65 +71,9 @@ public class Inspector {
 
 		for (Field f : fieldsToInspect)
 			printFieldInfo(obj, recursive, f);
-		
+
 		if (classObj.getSuperclass() != null)
 			inspectFields(classObj.getSuperclass(), obj, recursive);
-	}
-
-
-	private void inspectConstructors(Class classObj) {
-		Constructor[] constructors = classObj.getDeclaredConstructors();
-		if (constructors.length == 0) {
-			System.out.println("No Constructors.");
-			return;
-		}
-
-		for (Constructor c : constructors) {
-			printConstructorInfo(c);
-			inspectSuperclassConstructors(classObj);
-		}
-	}
-
-	private void inspectSuperclassConstructors(Class cObj) {
-		Class classObj = cObj.getSuperclass();
-		if (classObj != null) {
-			Constructor[] constructors = classObj.getDeclaredConstructors();
-			if (constructors.length == 0)
-				return;
-
-			for (Constructor c : constructors) {
-				printConstructorInfo(c);
-			}
-			inspectSuperclassConstructors(classObj);
-		}
-	}
-
-	private void inspectMethods(Class classObj) {
-		Method[] methods = classObj.getDeclaredMethods();
-		if (methods.length == 0) {
-			System.out.println("No methods.");
-			return;
-		}
-
-		for (Method m : methods) {
-			printMethodInfo(m);
-		}
-		inspectSuperclassMethods(classObj);
-	}
-
-	private void inspectSuperclassMethods(Class cObj) {
-		Class classObj = cObj.getSuperclass();
-		if (classObj != null) {
-
-			Method[] methods = classObj.getDeclaredMethods();
-			if (methods.length == 0)
-				return;
-
-			for (Method m : methods) {
-				printMethodInfo(m);
-			}
-			inspectSuperclassMethods(classObj);
-		}
 	}
 
 	private void printFieldInfo(Object obj, boolean recursive, Field f) throws IllegalAccessException {
@@ -152,6 +96,30 @@ public class Inspector {
 			inspect(f.get(obj), true);
 	}
 
+	private void printFieldValue(Field f, Object obj) throws IllegalArgumentException, IllegalAccessException {
+		if (f.getType().isArray()) {
+			Object fArray = f.get(obj);
+			System.out.println("Array Length: " + Array.getLength(fArray));
+			printArrayContents(fArray);
+		} else
+			System.out.println("Field Value: " + f.get(obj));
+	}
+
+	private void inspectConstructors(Class classObj) {
+		Constructor[] constructors = classObj.getDeclaredConstructors();
+		if (constructors.length == 0) {
+			System.out.println("No Constructors.");
+			return;
+		}
+
+		for (Constructor c : constructors)
+			printConstructorInfo(c);
+		
+		if (classObj.getSuperclass() != null)
+			inspectConstructors(classObj.getSuperclass());
+
+	}
+
 	private void printConstructorInfo(Constructor c) {
 		System.out.println("Constructor Name: " + c.getName());
 	
@@ -166,6 +134,20 @@ public class Inspector {
 		printSeparator();
 	}
 
+	private void inspectMethods(Class classObj) {
+		Method[] methods = classObj.getDeclaredMethods();
+		if (methods.length == 0) {
+			System.out.println("No methods.");
+			return;
+		}
+
+		for (Method m : methods)
+			printMethodInfo(m);
+		
+		if (classObj.getSuperclass() != null)
+			inspectMethods(classObj.getSuperclass());
+	}
+
 	private void printMethodInfo(Method m) {
 		System.out.println("Method Name: " + m.getName());
 		System.out.println("Declaring Class Name: " + m.getDeclaringClass().getName());
@@ -178,15 +160,6 @@ public class Inspector {
 		System.out.println();
 		printExceptions(m.getExceptionTypes());
 		printSeparator();
-	}
-
-	private void printFieldValue(Field f, Object obj) throws IllegalArgumentException, IllegalAccessException {
-		if (f.getType().isArray()) {
-			Object fArray = f.get(obj);
-			System.out.println("Array Length: " + Array.getLength(fArray));
-			printArrayContents(fArray);
-		} else
-			System.out.println("Field Value: " + f.get(obj));
 	}
 
 	private void printArrayContents(Object arr) {
