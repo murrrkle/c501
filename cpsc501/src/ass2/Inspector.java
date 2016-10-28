@@ -9,32 +9,27 @@ public class Inspector {
 			return;
 
 		try {
-			printInfo(obj);
+			Class classObj = obj.getClass();
+			printInfo(classObj, obj);
 			if (recursive) {
 				if (obj.getClass().getDeclaredFields().length == 0) {
 					return;
 				} else {
 					for (Field f : obj.getClass().getDeclaredFields()) {
 						f.setAccessible(true);
-						inspect(f.get(obj), true);
+						if (!f.getType().isPrimitive())
+							inspect(f.get(obj), true);
 					}
 				}
 			}
-		} catch (IllegalArgumentException | IllegalAccessException e) {
+		} catch (IllegalArgumentException | IllegalAccessException | InstantiationException e) {
 			e.printStackTrace();
 		}
-
-		// if (recursive && fieldsToInspect.length != 0) {
-		// for (Field field : fieldsToInspect) {
-		// inspect(field.getType(), true);
-		// }
-		// } else {
-		// return;
-		// }
 	}
 
-	private void printInfo(Object obj) throws IllegalArgumentException, IllegalAccessException {
-		Class classObj = obj.getClass();
+	private void printInfo(Class classObj, Object obj)
+			throws IllegalArgumentException, IllegalAccessException, InstantiationException {
+
 		printClassName(classObj);
 		printInterfaces(classObj);
 		printFields(classObj, obj);
@@ -49,7 +44,8 @@ public class Inspector {
 		System.out.println("Full Class Name: " + classObj.getName());
 		System.out.println("Class Name: " + classObj.getSimpleName());
 		System.out.println("Declaring Class Name: " + classObj.getDeclaringClass());
-		System.out.println("Immediate Superclass: " + classObj.getSuperclass().getName());
+		if (!classObj.equals(Object.class))
+			System.out.println("Immediate Superclass: " + classObj.getSuperclass().getName());
 		System.out.println();
 		return true;
 	}
@@ -80,17 +76,49 @@ public class Inspector {
 		System.out.println("┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙");
 
 		Field[] fieldsToInspect = classObj.getDeclaredFields();
+		Field[] fields = classObj.getFields();
 
-		if (fieldsToInspect.length == 0) {
+		if (fieldsToInspect.length == 0 && fields.length == 0) {
 			System.out.println("No fields.");
 			return false;
 		}
 
-		for (Field field : fieldsToInspect) {
-			field.setAccessible(true);
-			System.out.println("Field Name: " + field.getName());
-
+		for (Field field : fields) {
 			int modifiers = field.getModifiers();
+
+			System.out.println("Field Name: " + field.getName());
+			System.out.println("Field Declaring Class: " + field.getDeclaringClass().getName());
+			System.out.println("Field Modifiers: " + Modifier.toString(modifiers));
+
+			System.out.println("Field Type: " + field.getType().getSimpleName());
+
+			if (field.getType().isArray()) {
+				Object fArray = field.get(obj);
+				System.out.println("Array Length: " + Array.getLength(fArray));
+				if (Array.getLength(fArray) == 0)
+					System.out.println("Array Contents: []");
+				else {
+
+					System.out.print("Array Contents: [");
+					for (int i = 0; i < Array.getLength(fArray) - 1; i++) {
+						System.out.print(Array.get(fArray, i) + ", ");
+					}
+					System.out.println(Array.get(fArray, Array.getLength(fArray) - 1) + "]");
+				}
+			} else
+				System.out.println("Field Value: " + field.get(obj));
+
+			System.out.println("\n┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄\n");
+		}
+
+		for (Field field : fieldsToInspect) {
+
+			field.setAccessible(true);
+			int modifiers = field.getModifiers();
+			if (Modifier.isPublic(modifiers))
+				continue;
+
+			System.out.println("Field Name: " + field.getName());
 			System.out.println("Field Modifiers: " + Modifier.toString(modifiers));
 
 			System.out.println("Field Type: " + field.getType().getSimpleName());
@@ -120,7 +148,7 @@ public class Inspector {
 		System.out.println("┍━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┑");
 		System.out.println("│                Constructors                │");
 		System.out.println("┕━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┙");
-		Constructor[] constructors = classObj.getConstructors();
+		Constructor[] constructors = classObj.getDeclaredConstructors();
 		if (constructors.length == 0) {
 			System.out.println("No Constructors.");
 			return false;

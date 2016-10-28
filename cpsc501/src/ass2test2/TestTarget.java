@@ -1,14 +1,15 @@
-package ass2test;
+package ass2test2;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class TestTarget implements Iterable {
+public class TestTarget implements Iterable, Comparable {
 	private String message;
 	private ArrayList<String> arr;
-	private TestTarget2 tt2;
 	private int[] iarr;
+	public int ex;
+	protected boolean isTest;
 
 	public TestTarget() {
 		message = "default";
@@ -16,8 +17,9 @@ public class TestTarget implements Iterable {
 		arr.add("hello");
 		arr.add("World");
 		arr.add("!");
-		tt2 = new TestTarget2("gell");
 		iarr = new int[]{1, 2, 3, 4, 5, 6, 7};
+		ex = 0;
+		isTest = true;
 	}
 
 	public TestTarget(String text) {
@@ -41,5 +43,11 @@ public class TestTarget implements Iterable {
 	public Iterator iterator() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int compareTo(Object arg0) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

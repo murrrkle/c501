@@ -1,4 +1,4 @@
-package ass2test;
+package ass2test2;
 
 import static org.junit.Assert.*;
 
@@ -10,12 +10,12 @@ import ass2.Inspector;
 
 public class InspectorTest {
 	Inspector i;
-	TestTarget tt;
+	TestTarget2 tt;
 
 	@Before
 	public void setup() {
 		i = new Inspector();
-		tt = new TestTarget();
+		tt = new TestTarget2("hello");
 	}
 	@After
 	public void teardown() {
