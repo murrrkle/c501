@@ -253,7 +253,7 @@ public class Inspector {
 		for (Method m : methods) {
 			System.out.println("Method Name: " + m.getName());
 
-			System.out.println("Method Return Type: " + m.getReturnType());
+			System.out.println("Method Return Type: " + m.getReturnType().getSimpleName());
 
 			int modifiers = m.getModifiers();
 			System.out.println("Method Modifiers: " + Modifier.toString(modifiers));
@@ -283,6 +283,53 @@ public class Inspector {
 			}
 
 			System.out.println("\n┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄\n");
+		}
+		printSuperclassMethodInformation(classObj);
+	}
+
+	private void printSuperclassMethodInformation(Class cObj) {
+		Class classObj = cObj.getSuperclass();
+		if (classObj != null) {
+
+			Method[] methods = classObj.getDeclaredMethods();
+			if (methods.length == 0)
+				return;
+
+			for (Method m : methods) {
+				System.out.println("Method Name: " + m.getName());
+				System.out.println("Declaring Class Name: " + m.getDeclaringClass().getName());
+				System.out.println("Method Return Type: " + m.getReturnType().getSimpleName());
+
+				int modifiers = m.getModifiers();
+				System.out.println("Method Modifiers: " + Modifier.toString(modifiers));
+				System.out.println();
+
+				Class[] parameterList = m.getParameterTypes();
+				System.out.println("Method Parameter Types: ");
+				if (parameterList.length == 0) {
+					System.out.println("No parameters.");
+				} else {
+					for (Class p : parameterList) {
+						System.out.println("> " + p.getSimpleName() + " ");
+					}
+				}
+
+				System.out.println();
+
+				Class[] exceptionList = m.getExceptionTypes();
+				System.out.println("Thrown Exceptions: ");
+
+				if (exceptionList.length == 0) {
+					System.out.println("No thrown exceptions.");
+				} else {
+					for (Class e : exceptionList) {
+						System.out.println("> " + e.getName() + " ");
+					}
+				}
+
+				System.out.println("\n┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄\n");
+			}
+			printSuperclassMethodInformation(classObj);
 		}
 	}
 }
