@@ -31,11 +31,11 @@ public class TestTarget implements Iterable, Comparable {
 		return message;
 	}
 	
-	public void printMessage(String extraMessage) {
+	protected void printMessage(String extraMessage) {
 		System.out.println(message + extraMessage);
 	}
 	
-	public void display() throws IOException {
+	private void display() throws IOException {
 		System.out.println("Goodbye cruel world");
 	}
 
