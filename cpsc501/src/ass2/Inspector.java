@@ -18,17 +18,25 @@ public class Inspector {
 
 	private void printInfo(Class classObj, Object obj, boolean recursive)
 			throws IllegalArgumentException, IllegalAccessException, InstantiationException {
-
+		printClassNameBanner();
 		inspectClassNames(classObj);
+		
+		printInterfacesBanner();
 		inspectInterfaces(classObj);
+		
+		printFieldsBanner();
 		inspectFields(classObj, obj, recursive);
+
+		printConstructorsBanner();
 		inspectConstructors(classObj);
+
+		printMethodsBanner();
 		inspectMethods(classObj);
 
 	}
 
 	private void inspectClassNames(Class classObj) {
-		printClassNameBanner();
+		
 		System.out.println("Full Class Name: " + classObj.getName());
 		System.out.println("Class Name: " + classObj.getSimpleName());
 		System.out.println("Declaring Class Name: " + classObj.getDeclaringClass());
@@ -38,8 +46,6 @@ public class Inspector {
 	}
 
 	private void inspectInterfaces(Class classObj) {
-		printInterfacesBanner();
-
 		Class[] interfaces = classObj.getInterfaces();
 		System.out.println("Implemented Interfaces: ");
 		if (interfaces.length == 0) {
@@ -56,8 +62,6 @@ public class Inspector {
 
 	private void inspectFields(Class classObj, Object obj, boolean recursive)
 			throws IllegalArgumentException, IllegalAccessException {
-		printFieldsBanner();
-
 		Field[] fieldsToInspect = classObj.getDeclaredFields();
 
 		if (fieldsToInspect.length == 0) {
@@ -67,29 +71,13 @@ public class Inspector {
 
 		for (Field f : fieldsToInspect)
 			printFieldInfo(obj, recursive, f);
-
-		inspectSuperclassFields(classObj, obj, recursive);
+		
+		if (classObj.getSuperclass() != null)
+			inspectFields(classObj.getSuperclass(), obj, recursive);
 	}
 
-	private void inspectSuperclassFields(Class cObj, Object obj, boolean recursive)
-			throws IllegalArgumentException, IllegalAccessException {
-		Class classObj = cObj.getSuperclass();
-		if (classObj != null) {
-
-			Field[] fieldsToInspect = classObj.getDeclaredFields();
-
-			if (fieldsToInspect.length == 0)
-				return;
-
-			for (Field f : fieldsToInspect)
-				printFieldInfo(obj, recursive, f);
-
-			inspectSuperclassFields(classObj, obj, recursive);
-		}
-	}
 
 	private void inspectConstructors(Class classObj) {
-		printConstructorsBanner();
 		Constructor[] constructors = classObj.getDeclaredConstructors();
 		if (constructors.length == 0) {
 			System.out.println("No Constructors.");
@@ -117,8 +105,6 @@ public class Inspector {
 	}
 
 	private void inspectMethods(Class classObj) {
-		printMethodsBanner();
-
 		Method[] methods = classObj.getDeclaredMethods();
 		if (methods.length == 0) {
 			System.out.println("No methods.");
