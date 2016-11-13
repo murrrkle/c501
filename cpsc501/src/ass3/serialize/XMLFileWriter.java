@@ -1,4 +1,4 @@
-package ass3;
+package ass3.serialize;
 
 import java.io.File;
 import java.io.FileWriter;
