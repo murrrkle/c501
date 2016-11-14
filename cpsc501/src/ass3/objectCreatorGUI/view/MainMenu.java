@@ -6,7 +6,11 @@ import java.util.ArrayList;
 
 import ass3.serialize.Serializer;
 
-public class MainMenu extends Frame implements ActionListener, ItemListener, ContainerListener {
+public class MainMenu {
+	private Frame main;
+	private MainButtonListener mainBtnListener = new MainButtonListener();
+	private MainItemListener mainItmListener = new MainItemListener();
+	
 	private ScrollPane scrollpane;
 	private List objList;
 	private Panel btnPanel;
@@ -14,83 +18,82 @@ public class MainMenu extends Frame implements ActionListener, ItemListener, Con
 	private Serializer srl;
 
 	public MainMenu() {
-		setLayout(new BorderLayout());
+		main = new Frame();
+		main.setLayout(new BorderLayout());
 		
 		doc = new ArrayList<Object>();
 		srl = new Serializer();
 
 		// Button Panel
 		btnPanel = new Panel(new GridLayout(0, 1));
-		add("East", btnPanel);
+		main.add("East", btnPanel);
 
 		Button addButton = new Button("Add");
-		addButton.addActionListener(this);
+		addButton.addActionListener(mainBtnListener);
 		btnPanel.add(addButton);
 
 		Button editButton = new Button("Edit...");
-		editButton.addActionListener(this);
+		editButton.addActionListener(mainBtnListener);
 		btnPanel.add(editButton);
 
 		Button deleteButton = new Button("Delete");
-		deleteButton.addActionListener(this);
+		deleteButton.addActionListener(mainBtnListener);
 		btnPanel.add(deleteButton);
 
-		Button sendButton = new Button("Serialize & Send");
-		sendButton.addActionListener(this);
+		Button sendButton = new Button("Serialize");
+		sendButton.addActionListener(mainBtnListener);
 		btnPanel.add(sendButton);
 
 		// Scrollpane
 		objList = new List();
-		objList.addItemListener(this);
+		objList.addItemListener(mainItmListener);
 		scrollpane = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
 		scrollpane.add(objList);
-		add("Center", scrollpane);
+		main.add("Center", scrollpane);
 
 		// Window
-		setTitle("Assignment 3: Object Creator");
-		addWindowListener(new WindowAdapter() {
+		main.setTitle("Assignment 3: Object Creator");
+		main.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent we) {
-				dispose();
+				main.dispose();
 			}
 		});
-		setSize(500, 500);
-		setVisible(true);
+		main.setSize(500, 500);
+		main.setVisible(true);
 	}
+	
+	private class MainButtonListener implements ActionListener {
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		switch (e.getActionCommand()) {
-		case "Add":
-			new AddObjectMenu();
-			objList.add("added");
-			break;
-		case "Edit...":
-			objList.add("edited");
-			break;
-		case "Delete":
-			objList.add("deleted");
-			break;
-		case "Serialize & Send":
-			objList.add("sent");
-			break;
-		default:
-			System.out.println("What the hell did you do");
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			switch (e.getActionCommand()) {
+			case "Add":
+//				new NewObjectMenu();
+				objList.add("added");
+				break;
+			case "Edit...":
+				objList.add("edited");
+				break;
+			case "Delete":
+				objList.add("deleted");
+				break;
+			case "Serialize":
+				srl.serialize(doc);
+				break;
+			default:
+				System.out.println("What did you do? You're not supposed to be able to see this. Report the bug right away!");
+			}
 		}
 	}
+	
+	private class MainItemListener implements ItemListener {
 
-	@Override
-	public void componentAdded(ContainerEvent e) {
-		// TODO Auto-generated method stub
+		@Override
+		public void itemStateChanged(ItemEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
 		
 	}
 
-	@Override
-	public void componentRemoved(ContainerEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-	}
 }
