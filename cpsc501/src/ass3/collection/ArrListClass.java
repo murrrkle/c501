@@ -1,4 +1,4 @@
-package ass3.classes;
+package ass3.collection;
 
 import java.util.ArrayList;
 

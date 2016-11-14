@@ -5,7 +5,7 @@ import java.awt.Dialog.ModalityType;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-import ass3.classes.*;
+import ass3.collection.*;
 import ass3.serialize.Serializer;
 
 public class ObjectCreator {
