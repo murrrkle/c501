@@ -19,7 +19,7 @@ public class ObjectCreator {
 	private Serializer srl;
 
 	public ObjectCreator() {
-		init();
+		prepareGUI();
 
 		// Button Panel
 		main.add("East", btnPanel);
@@ -49,10 +49,7 @@ public class ObjectCreator {
 		frameConfig();
 	}
 
-	private void newObjectMWindow() {
-	}
-
-	private void init() {
+	private void prepareGUI() {
 		main = new Frame();
 		mainBtnListener = new MainButtonListener();
 		mainItmListener = new MainItemListener();
