@@ -6,26 +6,22 @@ import java.util.ArrayList;
 
 import ass3.serialize.Serializer;
 
-public class MainMenu {
+public class ObjectCreator {
 	private Frame main;
-	private MainButtonListener mainBtnListener = new MainButtonListener();
-	private MainItemListener mainItmListener = new MainItemListener();
-	
+	private MainButtonListener mainBtnListener;
+	private MainItemListener mainItmListener;
+
 	private ScrollPane scrollpane;
 	private List objList;
 	private Panel btnPanel;
+
 	private ArrayList<Object> doc;
 	private Serializer srl;
 
-	public MainMenu() {
-		main = new Frame();
-		main.setLayout(new BorderLayout());
-		
-		doc = new ArrayList<Object>();
-		srl = new Serializer();
+	public ObjectCreator() {
+		init();
 
 		// Button Panel
-		btnPanel = new Panel(new GridLayout(0, 1));
 		main.add("East", btnPanel);
 
 		Button addButton = new Button("Add");
@@ -45,13 +41,31 @@ public class MainMenu {
 		btnPanel.add(sendButton);
 
 		// Scrollpane
-		objList = new List();
 		objList.addItemListener(mainItmListener);
-		scrollpane = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
 		scrollpane.add(objList);
 		main.add("Center", scrollpane);
 
 		// Window
+		frameConfig();
+	}
+
+	private void newObjectMWindow() {
+
+	}
+
+	private void init() {
+		main = new Frame();
+		mainBtnListener = new MainButtonListener();
+		mainItmListener = new MainItemListener();
+		objList = new List();
+		scrollpane = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
+		btnPanel = new Panel(new GridLayout(0, 1));
+		doc = new ArrayList<Object>();
+		srl = new Serializer();
+		main.setLayout(new BorderLayout());
+	}
+
+	private void frameConfig() {
 		main.setTitle("Assignment 3: Object Creator");
 		main.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent we) {
@@ -61,14 +75,14 @@ public class MainMenu {
 		main.setSize(500, 500);
 		main.setVisible(true);
 	}
-	
+
 	private class MainButtonListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			switch (e.getActionCommand()) {
 			case "Add":
-//				new NewObjectMenu();
+				// new NewObjectMenu();
 				objList.add("added");
 				break;
 			case "Edit...":
@@ -81,19 +95,20 @@ public class MainMenu {
 				srl.serialize(doc);
 				break;
 			default:
-				System.out.println("What did you do? You're not supposed to be able to see this. Report the bug right away!");
+				System.out.println(
+						"What did you do? You're not supposed to be able to see this. Report the bug right away!");
 			}
 		}
 	}
-	
+
 	private class MainItemListener implements ItemListener {
 
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			// TODO Auto-generated method stub
-			
+
 		}
-		
+
 	}
 
 }
