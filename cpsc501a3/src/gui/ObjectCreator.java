@@ -1,10 +1,10 @@
-package ass3.gui;
+package gui;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-import ass3.serialize.Serializer;
+import serialize.Serializer;
 
 public class ObjectCreator {
 	private Frame main;
