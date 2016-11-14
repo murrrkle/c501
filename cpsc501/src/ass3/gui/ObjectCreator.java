@@ -1,47 +1,59 @@
 package ass3.gui;
 
 import java.awt.*;
+import java.awt.Dialog.ModalityType;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+import ass3.classes.*;
 import ass3.serialize.Serializer;
 
 public class ObjectCreator {
 	private Frame main;
 	private MainButtonListener mainBtnListener;
-	private MainItemListener mainItmListener;
 
 	private ScrollPane scrollpane;
 	private List objList;
-	private Panel btnPanel;
+	private Panel rightPanel, btnPanel, addPanel;
+	private AddSimpleClassDialogPanel dialogPanel;
+
+	private Dialog dialog;
 
 	private ArrayList<Object> doc;
 	private Serializer srl;
 
 	public ObjectCreator() {
-		prepareGUI();
+		init();
+		main.add("East", rightPanel);
+		rightPanel.add(addPanel);
+		rightPanel.add(btnPanel);
 
 		// Button Panel
-		main.add("East", btnPanel);
+		Button addSimpleButton = new Button("Add Simple");
+		addSimpleButton.addActionListener(mainBtnListener);
+		addPanel.add(addSimpleButton);
 
-		Button addButton = new Button("Add");
-		addButton.addActionListener(mainBtnListener);
-		btnPanel.add(addButton);
-
-		Button editButton = new Button("Edit...");
-		editButton.addActionListener(mainBtnListener);
-		btnPanel.add(editButton);
-
-		Button deleteButton = new Button("Delete");
-		deleteButton.addActionListener(mainBtnListener);
-		btnPanel.add(deleteButton);
-
+		Button addObjectButton = new Button("Add Object");
+		addObjectButton.addActionListener(mainBtnListener);
+		addPanel.add(addObjectButton);
+		
+		Button addSimpleArrayButton = new Button("Add Simple Array");
+		addSimpleArrayButton.addActionListener(mainBtnListener);
+		addPanel.add(addSimpleArrayButton);
+		
+		Button addObjectArrayButton = new Button("Add Obejct Array");
+		addObjectArrayButton.addActionListener(mainBtnListener);
+		addPanel.add(addObjectArrayButton);
+		
+		Button addArrayListButton = new Button("Add ArrayList");
+		addArrayListButton.addActionListener(mainBtnListener);
+		addPanel.add(addArrayListButton);
+		
 		Button sendButton = new Button("Serialize");
 		sendButton.addActionListener(mainBtnListener);
 		btnPanel.add(sendButton);
 
 		// Scrollpane
-		objList.addItemListener(mainItmListener);
 		scrollpane.add(objList);
 		main.add("Center", scrollpane);
 
@@ -49,13 +61,16 @@ public class ObjectCreator {
 		frameConfig();
 	}
 
-	private void prepareGUI() {
+	private void init() {
 		main = new Frame();
 		mainBtnListener = new MainButtonListener();
-		mainItmListener = new MainItemListener();
+
 		objList = new List();
 		scrollpane = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
-		btnPanel = new Panel(new GridLayout(0, 1));
+		rightPanel = new Panel(new GridLayout(2, 1));
+		addPanel = new Panel(new GridLayout(1, 6));
+		btnPanel = new Panel(new GridLayout(1, 1));
+
 		doc = new ArrayList<Object>();
 		srl = new Serializer();
 		main.setLayout(new BorderLayout());
@@ -68,7 +83,7 @@ public class ObjectCreator {
 				main.dispose();
 			}
 		});
-		main.setSize(500, 500);
+		main.setSize(800, 500);
 		main.setVisible(true);
 	}
 
@@ -77,34 +92,42 @@ public class ObjectCreator {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			switch (e.getActionCommand()) {
-			case "Add":
-				// new NewObjectMenu();
-				objList.add("added");
+			case "Add Simple":
+				addSimpleClass();
 				break;
-			case "Edit...":
-				objList.add("edited");
+			case "Add Object":
+				addSimpleClass();
 				break;
-			case "Delete":
-				objList.add("deleted");
+			case "Add Simple Array":
+				addSimpleClass();
+				break;
+			case "Add Object Array":
+				addSimpleClass();
+				break;
+			case "Add ArrayList":
+				addSimpleClass();
 				break;
 			case "Serialize":
 				srl.serialize(doc);
 				break;
 			default:
-				System.out.println(
-						"What did you do? You're not supposed to be able to see this. Report the bug right away!");
+				break;
 			}
 		}
-	}
 
-	private class MainItemListener implements ItemListener {
-
-		@Override
-		public void itemStateChanged(ItemEvent e) {
-			// TODO Auto-generated method stub
-
+		private void addSimpleClass() {
+			dialogPanel = new AddSimpleClassDialogPanel();
+			dialog = new Dialog(main, "Add New SimpleClass Object", ModalityType.APPLICATION_MODAL);
+			dialog.add(dialogPanel);
+			dialog.pack();
+			dialog.setLocationRelativeTo(null);
+			dialog.setVisible(true);
+			SimpleClass tmp = new SimpleClass();
+			tmp.value = Integer.parseInt(dialogPanel.getFieldText());
+			doc.add(tmp);
+			objList.add(tmp.getClass().getSimpleName() + " " + Integer.toString(tmp.hashCode()));
+			dialogPanel.reset();
 		}
-
 	}
 
 }
