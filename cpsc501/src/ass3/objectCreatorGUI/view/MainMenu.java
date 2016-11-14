@@ -1,15 +1,23 @@
-package ass3.objectCreatorGUI;
+package ass3.objectCreatorGUI.view;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
-public class ObjectCreator extends Frame implements ActionListener {
+import ass3.serialize.Serializer;
+
+public class MainMenu extends Frame implements ActionListener, ItemListener, ContainerListener {
 	private ScrollPane scrollpane;
 	private List objList;
 	private Panel btnPanel;
+	private ArrayList<Object> doc;
+	private Serializer srl;
 
-	public ObjectCreator() {
+	public MainMenu() {
 		setLayout(new BorderLayout());
+		
+		doc = new ArrayList<Object>();
+		srl = new Serializer();
 
 		// Button Panel
 		btnPanel = new Panel(new GridLayout(0, 1));
@@ -33,6 +41,7 @@ public class ObjectCreator extends Frame implements ActionListener {
 
 		// Scrollpane
 		objList = new List();
+		objList.addItemListener(this);
 		scrollpane = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
 		scrollpane.add(objList);
 		add("Center", scrollpane);
@@ -44,7 +53,7 @@ public class ObjectCreator extends Frame implements ActionListener {
 				dispose();
 			}
 		});
-		setSize(250, 300);
+		setSize(500, 500);
 		setVisible(true);
 	}
 
@@ -52,6 +61,7 @@ public class ObjectCreator extends Frame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
 		case "Add":
+			new AddObjectMenu();
 			objList.add("added");
 			break;
 		case "Edit...":
@@ -66,5 +76,21 @@ public class ObjectCreator extends Frame implements ActionListener {
 		default:
 			System.out.println("What the hell did you do");
 		}
+	}
+
+	@Override
+	public void componentAdded(ContainerEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void componentRemoved(ContainerEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
 	}
 }

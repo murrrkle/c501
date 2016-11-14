@@ -1,9 +1,9 @@
 package ass3;
 
-import ass3.objectCreatorGUI.ObjectCreator;
+import ass3.objectCreatorGUI.view.MainMenu;
 
 public class Sender {
 	public static void main(String[] args) {
-		ObjectCreator app = new ObjectCreator();
+		MainMenu app = new MainMenu();
 	}
 }

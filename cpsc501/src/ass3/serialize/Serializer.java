@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.zip.InflaterInputStream;
 
 import org.jdom2.Attribute;
@@ -19,8 +20,27 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
 public class Serializer {
+	private ArrayList<Object> objects;
+	
+	public Serializer() {
+		objects = new ArrayList<Object>();
+	}
+	
+	
 	public org.jdom2.Document serialize(Object obj) {
 		return null;
+	}
+	
+	public void addNewObject(String name) {
+
+	}
+
+	public void editObject(String name) {
+
+	}
+
+	public void removeObject(String name) {
+
 	}
 	
 //	static void writeXML(){
