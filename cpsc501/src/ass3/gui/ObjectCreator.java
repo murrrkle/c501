@@ -77,7 +77,6 @@ public class ObjectCreator {
 		btnPanel = new Panel(new GridLayout(1, 1));
 
 		doc = new IdentityHashMap<Integer, Object>();
-		srl = new Serializer();
 		main.setLayout(new BorderLayout());
 	}
 
@@ -113,11 +112,12 @@ public class ObjectCreator {
 				addArrListClass();
 				break;
 			case "Serialize":
+				Serializer srl = new Serializer(doc);
 				for (Map.Entry<Integer, Object> o : doc.entrySet()) {
 					Integer key = o.getKey();
 					System.out.println(key + " " + doc.get(key));
 				}
-				srl.serialize(doc);
+				srl.doSerialize();
 				break;
 			default:
 				break;

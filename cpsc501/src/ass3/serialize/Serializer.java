@@ -10,7 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.zip.InflaterInputStream;
 
 import org.jdom2.Attribute;
@@ -19,28 +20,70 @@ import org.jdom2.Element;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 
+import ass3.collection.*;
+
 public class Serializer {
-	private ArrayList<Object> objects;
+	private IdentityHashMap<Integer, Object> objects;
+	Document doc;
+	FileWriter fw;
 	
-	public Serializer() {
-		objects = new ArrayList<Object>();
+	public Serializer(IdentityHashMap<Integer, Object> map) {
+		objects = map;
+		Element serialized = new Element("serialized");
+		doc = new Document(serialized);
+		File f = new File("C:" + File.separator + "XMLData" + File.separator + "file.xml");
+		if (!f.exists()) {
+			try {
+				f.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			fw = new FileWriter(f);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	
 	
 	public org.jdom2.Document serialize(Object obj) {
-		return null;
+		if (obj instanceof Map.Entry<?, ?>) {
+			Integer objId = (Integer) ((Map.Entry) obj).getKey();
+			Object objValue = ((Map.Entry) obj).getValue();
+			
+			Element entry = new Element("object");
+			entry.setAttribute(new Attribute("id", objId.toString()));
+			entry.setAttribute(new Attribute("class", objValue.getClass().getSimpleName()));
+			doc.getRootElement().addContent(entry);
+			
+			switch (objValue.getClass().getSimpleName()) {
+				case "SimpleClass":
+					SimpleClass tmp = (SimpleClass) objValue;
+					Element field = new Element("object");
+					field.setAttribute(new Attribute("name", tmp.toString()));
+					break;
+				default:
+					break;
+			}
+			
+			
+		}
+		return doc;
 	}
-	
-	public void addNewObject(String name) {
 
-	}
+	public void doSerialize() {
+		XMLOutputter xmlOutput = new XMLOutputter();
+		xmlOutput.setFormat(Format.getPrettyFormat());
 
-	public void editObject(String name) {
-
-	}
-
-	public void removeObject(String name) {
-
+		for (Map.Entry<Integer, Object> o : objects.entrySet()) {
+			serialize(o);
+		}
+		try {
+			xmlOutput.output(doc, fw);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 //	static void writeXML(){
@@ -87,8 +130,7 @@ public class Serializer {
 //			int portNumber = 6666;
 //			ServerSocket serverSocket = new ServerSocket(portNumber);
 //			Socket socket = serverSocket.accept();
-//			// DataInputStream incomingData = new
-//			// DataInputStream(socket.getInputStream());
+//			// DataInputStream incomingData = new DataInputStream(socket.getInputStream());
 //			// String receivedMessage = (String) incomingData.readUTF();
 //			// System.out.println("message: " + receivedMessage);
 //
