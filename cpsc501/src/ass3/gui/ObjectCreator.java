@@ -171,9 +171,9 @@ public class ObjectCreator {
 				dialog.pack();
 				dialog.setLocationRelativeTo(null);
 				dialog.setVisible(true);
-				tmp.arr[i] = dialogPanel.getObject();
-				putObjectIntoDoc(tmp.arr[i]);
-				objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
+				tmp.arr[i] = dialogPanel.getObject().object;
+				//putObjectIntoDoc(tmp.arr[i]);
+				//objList.add(tmp.arr[i].getClass().getSimpleName() + " " + (id - 1));
 				dialogPanel.reset();
 			}
 			putObjectIntoDoc(tmp);
