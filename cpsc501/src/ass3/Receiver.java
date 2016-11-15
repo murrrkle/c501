@@ -13,8 +13,8 @@ import ass3.sockets.Server;
 public class Receiver {
 	
 	public static void main(String[] args) {
-		Server srv = new Server();
-		srv.getXMLFile();
+//		Server srv = new Server();
+//		srv.getXMLFile();
 		Document doc = readXML();
 		if (doc == null) {
 			System.out.println("File doesn't exist.");
