@@ -1,4 +1,4 @@
-package ass3.gui;
+package ass3;
 
 import java.awt.BorderLayout;
 import java.awt.Button;
