@@ -48,28 +48,22 @@ public class Sender {
 
 	private static void send() {
 		try {
-			
-			int portNumber = 6666;
-			ServerSocket serverSocket = new ServerSocket(portNumber);
-			Socket socket = serverSocket.accept();
+			String serverName = "172.16.99.148";
+			int port = 27015;
+			Socket socket = new Socket(serverName, port);
 
-			String outputFile = "C:" + File.separator + "XMLData" + File.separator + "outfile.xml";
-			File myFile = new File(outputFile);
-			if (!myFile.exists()) {
-				myFile.getParentFile().mkdirs();
-				myFile.createNewFile();
+			int count;
+			String inputFile = "C:" + File.separator + "XMLData" + File.separator + "file.xml";
+			File myFile = new File(inputFile);
+			byte[] buffer = new byte[(int) myFile.length()];
+			OutputStream out = socket.getOutputStream();
+			BufferedInputStream in = new BufferedInputStream(new FileInputStream(myFile));
+			while ((count = in.read(buffer)) > 0) {
+				out.write(buffer, 0, count);
+				out.flush();
 			}
-
-			FileOutputStream fos = new FileOutputStream(myFile);
-			byte[] buffer = new byte[1024];
-			InputStream in = socket.getInputStream();
-			while ((in.read(buffer)) > 0) {
-				byte revisedBuffer[] = new String(buffer).replaceAll("\0", "").getBytes();
-				fos.write(revisedBuffer);
-			}
-			fos.close();
-
-			serverSocket.close();
+			in.close();
+			socket.close();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
