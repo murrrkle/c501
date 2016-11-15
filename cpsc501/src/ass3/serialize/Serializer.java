@@ -86,18 +86,13 @@ public class Serializer {
 					SimpleArrClass sacTmp = (SimpleArrClass) objValue;
 					entry.setAttribute(new Attribute("length", Integer.toString(sacTmp.arr.length)));
 
-					Element sacField = new Element("field");
-					sacField.setAttribute(new Attribute("name", "arr"));
-					sacField.setAttribute(new Attribute("declaringclass",
-							classObj.getField("arr").getDeclaringClass().getSimpleName()));
-
 					for (int i = 0; i < 3; i++) {
 						Element sacValue = new Element("value");
 						sacValue.setText(Integer.toString(sacTmp.arr[i]));
-						sacField.addContent(sacValue);
+
+						entry.addContent(sacValue);
 					}
 
-					entry.addContent(sacField);
 					break;
 
 				case "ObjectClass":
@@ -120,18 +115,31 @@ public class Serializer {
 						
 					entry.setAttribute(new Attribute("length", Integer.toString(oacTmp.arr.length)));
 
-					Element oacField = new Element("field");
-					oacField.setAttribute(new Attribute("name", "arr"));
-					oacField.setAttribute(new Attribute("declaringclass",
-							classObj.getField("arr").getDeclaringClass().getSimpleName()));
-
 					for (int i = 0; i < 3; i++) {
 						Element oacValue = new Element("reference");
 						oacValue.setText(Integer.toString(getKey(oacTmp.arr[i])));
-						oacField.addContent(oacValue);
+						entry.addContent(oacValue);
 					}
 
-					entry.addContent(oacField);
+					break;
+					
+				case "ArrListClass":
+					ArrListClass alTmp = (ArrListClass) objValue;
+						
+					entry.setAttribute(new Attribute("length", Integer.toString(alTmp.arr.size())));
+
+					Element alField = new Element("field");
+					alField.setAttribute(new Attribute("name", "arr"));
+					alField.setAttribute(new Attribute("declaringclass",
+							classObj.getField("arr").getDeclaringClass().getSimpleName()));
+
+					for (int i = 0; i < alTmp.arr.size(); i++) {
+						Element alValue = new Element("reference");
+						alValue.setText(Integer.toString(getKey(alTmp.arr.get(i))));
+						alField.addContent(alValue);
+					}
+
+					entry.addContent(alField);
 					break;
 
 				default:

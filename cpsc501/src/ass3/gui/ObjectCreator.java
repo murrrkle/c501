@@ -192,9 +192,7 @@ public class ObjectCreator {
 					dialog.pack();
 					dialog.setLocationRelativeTo(null);
 					dialog.setVisible(true);
-					tmp.arr.add(dialogPanel.getObject());
-					putObjectIntoDoc(dialogPanel.getObject());
-					objList.add(dialogPanel.getObject().getClass().getSimpleName() + " " + (id - 1));
+					tmp.arr.add(dialogPanel.getObject().object);
 				}
 			});
 			okButton.addActionListener(new ActionListener() {
@@ -476,9 +474,9 @@ public class ObjectCreator {
 						dialog.pack();
 						dialog.setLocationRelativeTo(null);
 						dialog.setVisible(true);
-						tmp.arr.add(dialogPanel.getObject());
-						putObjectIntoDoc(dialogPanel.getObject());
-						objList.add(dialogPanel.getObject().getClass().getSimpleName() + " " + (id - 1));
+						tmp.arr.add(dialogPanel.getObject().object);
+//						putObjectIntoDoc(dialogPanel.getObject());
+//						objList.add(dialogPanel.getObject().getClass().getSimpleName() + " " + (id - 1));
 					}
 				});
 				okButton.addActionListener(new ActionListener() {
