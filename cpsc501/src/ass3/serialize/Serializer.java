@@ -1,19 +1,10 @@
 package ass3.serialize;
 
-import java.awt.im.InputContext;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.zip.InflaterInputStream;
-
 import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;

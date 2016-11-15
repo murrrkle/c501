@@ -1,4 +1,4 @@
-package ass3;
+package ass3.sockets;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -7,7 +7,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
-
 	public void getXMLFile() {
 		try {
 			int portNumber = 27015;

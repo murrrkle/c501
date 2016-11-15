@@ -1,23 +1,14 @@
 package ass3;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.IdentityHashMap;
-import java.util.List;
-
 import org.jdom2.Document;
-import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 import ass3.serialize.Deserializer;
+import ass3.sockets.Server;
 
 public class Receiver {
 	
