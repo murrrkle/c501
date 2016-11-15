@@ -34,6 +34,7 @@ public class Serializer {
 		File f = new File("C:" + File.separator + "XMLData" + File.separator + "file.xml");
 		if (!f.exists()) {
 			try {
+				f.getParentFile().mkdirs();
 				f.createNewFile();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -167,45 +168,6 @@ public class Serializer {
 		}
 
 	}
-
-	// static void writeXML(){
-	// try {
-	//
-	// Element company = new Element("company");
-	// Document doc = new Document(company);
-	// //doc.setRootElement(company);
-	//
-	// Element staff = new Element("staff");
-	// staff.setAttribute(new Attribute("id", "1"));
-	// staff.addContent(new Element("firstname").setText("Allen"));
-	// staff.addContent(new Element("lastname").setText("Kim"));
-	// staff.addContent(new Element("nickname").setText("John"));
-	// staff.addContent(new Element("salary").setText("200000"));
-	//
-	// doc.getRootElement().addContent(staff);
-	//
-	// Element staff2 = new Element("staff");
-	// staff2.setAttribute(new Attribute("id", "2"));
-	// staff2.addContent(new Element("firstname").setText("Steve"));
-	// staff2.addContent(new Element("lastname").setText("Smith"));
-	// staff2.addContent(new Element("nickname").setText("Kevin"));
-	// staff2.addContent(new Element("salary").setText("180000"));
-	//
-	// doc.getRootElement().addContent(staff2);
-	//
-	// // new XMLOutputter().output(doc, System.out);
-	// XMLOutputter xmlOutput = new XMLOutputter();
-	//
-	// // display nice nice
-	// xmlOutput.setFormat(Format.getPrettyFormat());
-	// xmlOutput.output(doc, new FileWriter("C:\\XMLData\\file.xml"));
-	//
-	// System.out.println("File Saved!");
-	//
-	// } catch (IOException io) {
-	// System.out.println(io.getMessage());
-	// }
-	// }
 
 	// public static void main(String[] args) {
 	// try {
