@@ -5,6 +5,7 @@ import java.awt.Dialog.ModalityType;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
+import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
@@ -67,7 +68,7 @@ public class ObjectCreator {
 	private void init() {
 		main = new Frame();
 		mainBtnListener = new MainButtonListener();
-		
+
 		id = new Integer(0);
 		objList = new List();
 		scrollpane = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
@@ -103,7 +104,7 @@ public class ObjectCreator {
 				addObjectClass();
 				break;
 			case "Add Simple Array":
-				addSimpleClass();
+				addSimpleArray();
 				break;
 			case "Add Object Array":
 				addSimpleClass();
@@ -112,11 +113,16 @@ public class ObjectCreator {
 				addSimpleClass();
 				break;
 			case "Serialize":
+				for (Map.Entry<Integer, Object> o : doc.entrySet()) {
+					Integer key = o.getKey();
+					System.out.println(key + " " + doc.get(key));
+				}
 				srl.serialize(doc);
 				break;
 			default:
 				break;
 			}
+			dialog = null;
 		}
 
 		private void addSimpleClass() {
@@ -126,13 +132,23 @@ public class ObjectCreator {
 			dialog.pack();
 			dialog.setLocationRelativeTo(null);
 			dialog.setVisible(true);
-			SimpleClass tmp = new SimpleClass();
-			tmp.value = Integer.parseInt(dialogPanel.getFieldText());
+			SimpleClass tmp = dialogPanel.getObject();
 			putObjectIntoDoc(tmp);
-			objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
-			dialogPanel.reset();
+			objList.add(tmp.getClass().getSimpleName() + " " + (id - 1) + " " + tmp.value);
 		}
 		
+		private void addSimpleArray() {
+			AddSimpleArrayDialogPanel dialogPanel = new AddSimpleArrayDialogPanel();
+			dialog = new Dialog(main, "Add New SimpleClass Object", ModalityType.APPLICATION_MODAL);
+			dialog.add(dialogPanel);
+			dialog.pack();
+			dialog.setLocationRelativeTo(null);
+			dialog.setVisible(true);
+			SimpleArrClass tmp = dialogPanel.getObject();
+			putObjectIntoDoc(tmp);
+			objList.add(tmp.getClass().getSimpleName() + " " + (id - 1) + " " + tmp.arr);
+		}
+
 		private void addObjectClass() {
 			AddObjectClassDialogPanel dialogPanel = new AddObjectClassDialogPanel();
 			dialog = new Dialog(main, "Add New ObjectClass Object", ModalityType.APPLICATION_MODAL);
@@ -141,13 +157,13 @@ public class ObjectCreator {
 			dialog.setLocationRelativeTo(null);
 			dialog.setVisible(true);
 			ObjectClass tmp = new ObjectClass();
-			tmp.object = Integer.parseInt(dialogPanel.getObject());
+			tmp.object = dialogPanel.getObject();
 			putObjectIntoDoc(tmp);
 			objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
 			dialogPanel.reset();
 		}
 	}
-	
+
 	private void putObjectIntoDoc(Object object) {
 		doc.put(id, object);
 		id++;
@@ -156,10 +172,11 @@ public class ObjectCreator {
 	private class AddSimpleClassDialogPanel extends Panel {
 		private Label valueLabel;
 		private TextField valueField;
-
+		private SimpleClass obj;
 		private Button okButton;
 
 		public AddSimpleClassDialogPanel() {
+			obj = new SimpleClass();
 			okButton = new Button("OK");
 			valueLabel = new Label("Value: ");
 			valueField = new TextField(10);
@@ -176,17 +193,61 @@ public class ObjectCreator {
 
 		private void okButtonAction() {
 			if (isInteger(valueField.getText())) {
+				obj.value = Integer.parseInt(valueField.getText());
 				Window win = SwingUtilities.getWindowAncestor(this);
 				win.dispose();
 			}
 		}
 
-		public String getFieldText() {
-			return valueField.getText();
+		public SimpleClass getObject() {
+			return obj;
 		}
 
-		public void reset() {
-			valueField.setText("");
+		public boolean isInteger(String s) {
+			try {
+				Integer.parseInt(s);
+			} catch (NumberFormatException e) {
+				return false;
+			} catch (NullPointerException e) {
+				return false;
+			}
+			// only got here if we didn't return false
+			return true;
+		}
+	}
+
+	private class AddSimpleArrayDialogPanel extends Panel {
+		private Label valueLabel;
+		private TextField valueField;
+		private SimpleArrClass obj;
+		private Button okButton;
+
+		public AddSimpleArrayDialogPanel() {
+			obj = new SimpleArrClass();
+			okButton = new Button("OK");
+			valueLabel = new Label("Value: ");
+			valueField = new TextField(10);
+
+			okButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					okButtonAction();
+				}
+			});
+			add(valueLabel);
+			add(valueField);
+			add(okButton);
+		}
+
+		private void okButtonAction() {
+			if (isInteger(valueField.getText())) {
+				//obj.arr = Integer.parseInt(valueField.getText());
+				Window win = SwingUtilities.getWindowAncestor(this);
+				win.dispose();
+			}
+		}
+
+		public SimpleArrClass getObject() {
+			return obj;
 		}
 
 		public boolean isInteger(String s) {
@@ -203,51 +264,114 @@ public class ObjectCreator {
 	}
 	
 	private class AddObjectClassDialogPanel extends Panel {
-		private Label valueLabel;
-		private TextField valueField;
-
-		private Button okButton;
+		private Label messageLabel;
+		private Panel btnPanel;
+		private ObjectClass obj;
+		private ButtonListener btnListener;
 
 		public AddObjectClassDialogPanel() {
-			okButton = new Button("OK");
-			valueLabel = new Label("Value: ");
-			valueField = new TextField(10);
+			obj = new ObjectClass();
+			btnListener = new ButtonListener();
 
-			okButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
+			setLayout(new GridLayout(2, 1));
+			messageLabel = new Label("Choose an object: ");
+			add(messageLabel);
+
+			btnPanel = new Panel(new GridLayout(1, 5));
+
+			Button addSimpleButton = new Button("Add Simple");
+			addSimpleButton.addActionListener(btnListener);
+			btnPanel.add(addSimpleButton);
+
+			Button addObjectButton = new Button("Add Object");
+			addObjectButton.addActionListener(btnListener);
+			btnPanel.add(addObjectButton);
+
+			Button addSimpleArrayButton = new Button("Add Simple Array");
+			addSimpleArrayButton.addActionListener(btnListener);
+			btnPanel.add(addSimpleArrayButton);
+
+			Button addObjectArrayButton = new Button("Add Object Array");
+			addObjectArrayButton.addActionListener(btnListener);
+			btnPanel.add(addObjectArrayButton);
+
+			Button addArrayListButton = new Button("Add ArrayList");
+			addArrayListButton.addActionListener(btnListener);
+			btnPanel.add(addArrayListButton);
+
+			add(btnPanel);
+		}
+		
+		private class ButtonListener implements ActionListener {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				switch (e.getActionCommand()) {
+				case "Add Simple":
+					addSimpleClass();
 					okButtonAction();
+					break;
+				case "Add Object":
+					addObjectClass();
+					okButtonAction();
+					break;
+				case "Add Simple Array":
+					addSimpleClass();
+					okButtonAction();
+					break;
+				case "Add Object Array":
+					addSimpleClass();
+					okButtonAction();
+					break;
+				case "Add ArrayList":
+					addSimpleClass();
+					okButtonAction();
+					break;
+				default:
+					break;
 				}
-			});
-			add(valueLabel);
-			add(valueField);
-			add(okButton);
+				dialog = null;
+			}
+
+			private void addSimpleClass() {
+				AddSimpleClassDialogPanel dialogPanel = new AddSimpleClassDialogPanel();
+				dialog = new Dialog(main, "Add New SimpleClass Object", ModalityType.APPLICATION_MODAL);
+				dialog.add(dialogPanel);
+				dialog.pack();
+				dialog.setLocationRelativeTo(null);
+				dialog.setVisible(true);
+				SimpleClass tmp = dialogPanel.getObject();
+				obj.object = tmp;
+				putObjectIntoDoc(tmp);
+				objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
+			}
+
+			private void addObjectClass() {
+				AddObjectClassDialogPanel dialogPanel = new AddObjectClassDialogPanel();
+				dialog = new Dialog(main, "Add New ObjectClass Object", ModalityType.APPLICATION_MODAL);
+				dialog.add(dialogPanel);
+				dialog.pack();
+				dialog.setLocationRelativeTo(null);
+				dialog.setVisible(true);
+				ObjectClass tmp = dialogPanel.getObject();
+				obj.object = tmp;
+				putObjectIntoDoc(tmp);
+				objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
+				dialogPanel.reset();
+			}
 		}
 
 		private void okButtonAction() {
-			if (isInteger(valueField.getText())) {
-				Window win = SwingUtilities.getWindowAncestor(this);
-				win.dispose();
-			}
+			Window win = SwingUtilities.getWindowAncestor(this);
+			win.dispose();
 		}
 
-		public String getObject() {
-			return valueField.getText();
+		public ObjectClass getObject() {
+			return obj;
 		}
 
 		public void reset() {
-			valueField.setText("");
-		}
-
-		public boolean isInteger(String s) {
-			try {
-				Integer.parseInt(s);
-			} catch (NumberFormatException e) {
-				return false;
-			} catch (NullPointerException e) {
-				return false;
-			}
-			// only got here if we didn't return false
-			return true;
+			obj = null;
 		}
 	}
 
