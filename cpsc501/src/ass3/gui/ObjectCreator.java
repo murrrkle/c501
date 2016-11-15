@@ -45,7 +45,7 @@ public class ObjectCreator {
 		addSimpleArrayButton.addActionListener(mainBtnListener);
 		addPanel.add(addSimpleArrayButton);
 
-		Button addObjectArrayButton = new Button("Add Obejct Array");
+		Button addObjectArrayButton = new Button("Add Object Array");
 		addObjectArrayButton.addActionListener(mainBtnListener);
 		addPanel.add(addObjectArrayButton);
 
@@ -107,10 +107,10 @@ public class ObjectCreator {
 				addSimpleArray();
 				break;
 			case "Add Object Array":
-				addSimpleClass();
+				addObjectArrClass();
 				break;
 			case "Add ArrayList":
-				addSimpleClass();
+				addArrListClass();
 				break;
 			case "Serialize":
 				for (Map.Entry<Integer, Object> o : doc.entrySet()) {
@@ -136,10 +136,10 @@ public class ObjectCreator {
 			putObjectIntoDoc(tmp);
 			objList.add(tmp.getClass().getSimpleName() + " " + (id - 1) + " " + tmp.value);
 		}
-		
+
 		private void addSimpleArray() {
 			AddSimpleArrayDialogPanel dialogPanel = new AddSimpleArrayDialogPanel();
-			dialog = new Dialog(main, "Add New SimpleClass Object", ModalityType.APPLICATION_MODAL);
+			dialog = new Dialog(main, "Add New SimpleArrClass Object", ModalityType.APPLICATION_MODAL);
 			dialog.add(dialogPanel);
 			dialog.pack();
 			dialog.setLocationRelativeTo(null);
@@ -156,12 +156,159 @@ public class ObjectCreator {
 			dialog.pack();
 			dialog.setLocationRelativeTo(null);
 			dialog.setVisible(true);
-			ObjectClass tmp = new ObjectClass();
-			tmp.object = dialogPanel.getObject();
+			ObjectClass tmp = dialogPanel.getObject();
 			putObjectIntoDoc(tmp);
 			objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
 			dialogPanel.reset();
 		}
+
+		private void addObjectArrClass() {
+			ObjectArrClass tmp = new ObjectArrClass();
+			for (int i = 0; i < 3; i++) {
+				AddObjectClassDialogPanel dialogPanel = new AddObjectClassDialogPanel();
+				dialog = new Dialog(main, "Add New ObjectClass Object", ModalityType.APPLICATION_MODAL);
+				dialog.add(dialogPanel);
+				dialog.pack();
+				dialog.setLocationRelativeTo(null);
+				dialog.setVisible(true);
+				tmp.arr[i] = dialogPanel.getObject();
+				putObjectIntoDoc(tmp.arr[i]);
+				objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
+				dialogPanel.reset();
+			}
+			putObjectIntoDoc(tmp);
+			objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
+		}
+
+		private void addArrListClass() {
+			ArrListClass tmpArrL = new ArrListClass();
+			Panel dialogPanel = new Panel(new GridLayout(2, 1));
+
+			ActionListener btnListener = new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					switch (e.getActionCommand()) {
+					case "Add Simple":
+						addSimpleClass();
+						break;
+					case "Add Object":
+						addObjectClass();
+						break;
+					case "Add Simple Array":
+						addSimpleArrClass();
+						break;
+					case "Add Object Array":
+						addObjectArrClass();
+						break;
+					case "Add ArrayList":
+						addSimpleClass();
+						break;
+					default:
+						break;
+					}
+					dialog = null;
+				}
+
+				private void addSimpleClass() {
+					AddSimpleClassDialogPanel dialogPanel = new AddSimpleClassDialogPanel();
+					dialog = new Dialog(main, "Add New SimpleClass Object", ModalityType.APPLICATION_MODAL);
+					dialog.add(dialogPanel);
+					dialog.pack();
+					dialog.setLocationRelativeTo(null);
+					dialog.setVisible(true);
+					SimpleClass tmp = dialogPanel.getObject();
+					tmpArrL.arr.add(tmp);
+					putObjectIntoDoc(tmp);
+					objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
+				}
+
+				private void addObjectClass() {
+					AddObjectClassDialogPanel dialogPanel = new AddObjectClassDialogPanel();
+					dialog = new Dialog(main, "Add New ObjectClass Object", ModalityType.APPLICATION_MODAL);
+					dialog.add(dialogPanel);
+					dialog.pack();
+					dialog.setLocationRelativeTo(null);
+					dialog.setVisible(true);
+					ObjectClass tmp = dialogPanel.getObject();
+					tmpArrL.arr.add(tmp);
+					putObjectIntoDoc(tmp);
+					objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
+					dialogPanel.reset();
+				}
+
+				private void addSimpleArrClass() {
+					AddSimpleArrayDialogPanel dialogPanel = new AddSimpleArrayDialogPanel();
+					dialog = new Dialog(main, "Add New SimpleArrClass Object", ModalityType.APPLICATION_MODAL);
+					dialog.add(dialogPanel);
+					dialog.pack();
+					dialog.setLocationRelativeTo(null);
+					dialog.setVisible(true);
+					SimpleArrClass tmp = dialogPanel.getObject();
+					tmpArrL.arr.add(tmp);
+					putObjectIntoDoc(tmp);
+					objList.add(tmp.getClass().getSimpleName() + " " + (id - 1) + " " + tmp.arr);
+				}
+
+				private void addObjectArrClass() {
+					ObjectArrClass tmp = new ObjectArrClass();
+					for (int i = 0; i < 3; i++) {
+						AddObjectClassDialogPanel dialogPanel = new AddObjectClassDialogPanel();
+						dialog = new Dialog(main, "Add New ObjectClass Object", ModalityType.APPLICATION_MODAL);
+						dialog.add(dialogPanel);
+						dialog.pack();
+						dialog.setLocationRelativeTo(null);
+						dialog.setVisible(true);
+						tmp.arr[i] = dialogPanel.getObject();
+						putObjectIntoDoc(tmp.arr[i]);
+						objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
+						dialogPanel.reset();
+					}
+					putObjectIntoDoc(tmp);
+					objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
+				}
+			};
+			
+			btnPanel = new Panel(new GridLayout(1, 5));
+
+			Button addSimpleButton = new Button("Add Simple");
+			addSimpleButton.addActionListener(btnListener);
+			btnPanel.add(addSimpleButton);
+
+			Button addObjectButton = new Button("Add Object");
+			addObjectButton.addActionListener(btnListener);
+			btnPanel.add(addObjectButton);
+
+			Button addSimpleArrayButton = new Button("Add Simple Array");
+			addSimpleArrayButton.addActionListener(btnListener);
+			btnPanel.add(addSimpleArrayButton);
+
+			Button addObjectArrayButton = new Button("Add Object Array");
+			addObjectArrayButton.addActionListener(btnListener);
+			btnPanel.add(addObjectArrayButton);
+
+			Button addArrayListButton = new Button("Add ArrayList");
+			addArrayListButton.addActionListener(btnListener);
+			btnPanel.add(addArrayListButton);
+
+			Button okButton = new Button("OK");
+			okButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					putObjectIntoDoc(tmpArrL);
+					objList.add(tmpArrL.getClass().getSimpleName() + " " + (id - 1));
+					Window win = SwingUtilities.getWindowAncestor(dialogPanel);
+					win.dispose();
+				}
+			});
+			dialogPanel.add(btnPanel);
+			dialogPanel.add(okButton);
+			dialog = new Dialog(main, "Add New ArrListClass Object", ModalityType.APPLICATION_MODAL);
+			dialog.add(dialogPanel);
+			dialog.pack();
+			dialog.setLocationRelativeTo(null);
+			dialog.setVisible(true);
+		}
+
 	}
 
 	private void putObjectIntoDoc(Object object) {
@@ -217,30 +364,50 @@ public class ObjectCreator {
 	}
 
 	private class AddSimpleArrayDialogPanel extends Panel {
-		private Label valueLabel;
-		private TextField valueField;
+		Panel textFieldPanel;
+		private Label valueLabel1;
+		private TextField valueField1;
+		private Label valueLabel2;
+		private TextField valueField2;
+		private Label valueLabel3;
+		private TextField valueField3;
 		private SimpleArrClass obj;
 		private Button okButton;
 
 		public AddSimpleArrayDialogPanel() {
+			setLayout(new GridLayout(2, 1));
+			textFieldPanel = new Panel(new GridLayout(3, 2));
 			obj = new SimpleArrClass();
 			okButton = new Button("OK");
-			valueLabel = new Label("Value: ");
-			valueField = new TextField(10);
+			valueLabel1 = new Label("Value 1: ");
+			valueField1 = new TextField(10);
+			valueLabel2 = new Label("Value 2: ");
+			valueField2 = new TextField(10);
+			valueLabel3 = new Label("Value 3: ");
+			valueField3 = new TextField(10);
 
 			okButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					okButtonAction();
 				}
 			});
-			add(valueLabel);
-			add(valueField);
+
+			textFieldPanel.add(valueLabel1);
+			textFieldPanel.add(valueField1);
+			textFieldPanel.add(valueLabel2);
+			textFieldPanel.add(valueField2);
+			textFieldPanel.add(valueLabel3);
+			textFieldPanel.add(valueField3);
+			add(textFieldPanel);
 			add(okButton);
 		}
 
 		private void okButtonAction() {
-			if (isInteger(valueField.getText())) {
-				//obj.arr = Integer.parseInt(valueField.getText());
+			if (isInteger(valueField1.getText()) && isInteger(valueField2.getText())
+					&& isInteger(valueField3.getText())) {
+				obj.arr[0] = Integer.parseInt(valueField1.getText());
+				obj.arr[1] = Integer.parseInt(valueField2.getText());
+				obj.arr[2] = Integer.parseInt(valueField3.getText());
 				Window win = SwingUtilities.getWindowAncestor(this);
 				win.dispose();
 			}
@@ -262,7 +429,7 @@ public class ObjectCreator {
 			return true;
 		}
 	}
-	
+
 	private class AddObjectClassDialogPanel extends Panel {
 		private Label messageLabel;
 		private Panel btnPanel;
@@ -301,7 +468,7 @@ public class ObjectCreator {
 
 			add(btnPanel);
 		}
-		
+
 		private class ButtonListener implements ActionListener {
 
 			@Override
@@ -316,11 +483,11 @@ public class ObjectCreator {
 					okButtonAction();
 					break;
 				case "Add Simple Array":
-					addSimpleClass();
+					addSimpleArrClass();
 					okButtonAction();
 					break;
 				case "Add Object Array":
-					addSimpleClass();
+					addObjectArrClass();
 					okButtonAction();
 					break;
 				case "Add ArrayList":
@@ -359,6 +526,37 @@ public class ObjectCreator {
 				objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
 				dialogPanel.reset();
 			}
+
+			private void addSimpleArrClass() {
+				AddSimpleArrayDialogPanel dialogPanel = new AddSimpleArrayDialogPanel();
+				dialog = new Dialog(main, "Add New SimpleArrClass Object", ModalityType.APPLICATION_MODAL);
+				dialog.add(dialogPanel);
+				dialog.pack();
+				dialog.setLocationRelativeTo(null);
+				dialog.setVisible(true);
+				SimpleArrClass tmp = dialogPanel.getObject();
+				obj.object = tmp;
+				putObjectIntoDoc(tmp);
+				objList.add(tmp.getClass().getSimpleName() + " " + (id - 1) + " " + tmp.arr);
+			}
+
+			private void addObjectArrClass() {
+				ObjectArrClass tmp = new ObjectArrClass();
+				for (int i = 0; i < 3; i++) {
+					AddObjectClassDialogPanel dialogPanel = new AddObjectClassDialogPanel();
+					dialog = new Dialog(main, "Add New ObjectClass Object", ModalityType.APPLICATION_MODAL);
+					dialog.add(dialogPanel);
+					dialog.pack();
+					dialog.setLocationRelativeTo(null);
+					dialog.setVisible(true);
+					tmp.arr[i] = dialogPanel.getObject();
+					putObjectIntoDoc(tmp.arr[i]);
+					objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
+					dialogPanel.reset();
+				}
+				putObjectIntoDoc(tmp);
+				objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
+			}
 		}
 
 		private void okButtonAction() {
@@ -374,5 +572,4 @@ public class ObjectCreator {
 			obj = null;
 		}
 	}
-
 }
