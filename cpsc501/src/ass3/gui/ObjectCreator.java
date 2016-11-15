@@ -159,7 +159,7 @@ public class ObjectCreator {
 			ObjectClass tmp = dialogPanel.getObject();
 			putObjectIntoDoc(tmp);
 			objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
-			dialogPanel.reset();
+			//dialogPanel.reset();
 		}
 
 		private void addObjectArrClass() {
@@ -172,9 +172,7 @@ public class ObjectCreator {
 				dialog.setLocationRelativeTo(null);
 				dialog.setVisible(true);
 				tmp.arr[i] = dialogPanel.getObject().object;
-				//putObjectIntoDoc(tmp.arr[i]);
-				//objList.add(tmp.arr[i].getClass().getSimpleName() + " " + (id - 1));
-				dialogPanel.reset();
+				//dialogPanel.reset();
 			}
 			putObjectIntoDoc(tmp);
 			objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
@@ -431,7 +429,7 @@ public class ObjectCreator {
 				obj.object = tmp;
 				putObjectIntoDoc(tmp);
 				objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
-				dialogPanel.reset();
+				//dialogPanel.reset();
 			}
 
 			private void addSimpleArrClass() {
@@ -456,10 +454,9 @@ public class ObjectCreator {
 					dialog.pack();
 					dialog.setLocationRelativeTo(null);
 					dialog.setVisible(true);
-					tmp.arr[i] = dialogPanel.getObject();
-					putObjectIntoDoc(tmp.arr[i]);
-					objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
-					dialogPanel.reset();
+					obj.object = tmp;
+					tmp.arr[i] = dialogPanel.getObject().object;
+					//dialogPanel.reset();
 				}
 				putObjectIntoDoc(tmp);
 				objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));

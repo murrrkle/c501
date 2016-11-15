@@ -45,9 +45,9 @@ public class Serializer {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private int getKey(Object obj) {
-		for (Map.Entry<Integer, Object> o : objects.entrySet()) {
+		for (Map.Entry<Integer, Object> o : objects.entrySet()) {			
 			if (obj.equals(o.getValue()))
 				return o.getKey();
 		}
@@ -99,7 +99,7 @@ public class Serializer {
 
 					entry.addContent(sacField);
 					break;
-					
+
 				case "ObjectClass":
 					ObjectClass ocTmp = (ObjectClass) objValue;
 
@@ -111,13 +111,13 @@ public class Serializer {
 					Element ocValue = new Element("value");
 					ocValue.setText(Integer.toString(getKey(ocTmp.object)));
 					ocField.addContent(ocValue);
-					
 
 					entry.addContent(ocField);
 					break;
-					
+
 				case "ObjectArrClass":
 					ObjectArrClass oacTmp = (ObjectArrClass) objValue;
+						
 					entry.setAttribute(new Attribute("length", Integer.toString(oacTmp.arr.length)));
 
 					Element oacField = new Element("field");
