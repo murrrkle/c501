@@ -24,8 +24,8 @@ import ass3.collection.*;
 
 public class Serializer {
 	private IdentityHashMap<Integer, Object> objects;
-	Document doc;
-	FileWriter fw;
+	private Document doc;
+	private FileWriter fw;
 
 	public Serializer(IdentityHashMap<Integer, Object> map) {
 		objects = map;
@@ -48,7 +48,7 @@ public class Serializer {
 	}
 
 	private int getKey(Object obj) {
-		for (Map.Entry<Integer, Object> o : objects.entrySet()) {			
+		for (Map.Entry<Integer, Object> o : objects.entrySet()) {
 			if (obj.equals(o.getValue()))
 				return o.getKey();
 		}
@@ -113,7 +113,7 @@ public class Serializer {
 
 				case "ObjectArrClass":
 					ObjectArrClass oacTmp = (ObjectArrClass) objValue;
-						
+
 					entry.setAttribute(new Attribute("length", Integer.toString(oacTmp.arr.length)));
 
 					for (int i = 0; i < 3; i++) {
@@ -123,10 +123,10 @@ public class Serializer {
 					}
 
 					break;
-					
+
 				case "ArrListClass":
 					ArrListClass alTmp = (ArrListClass) objValue;
-						
+
 					entry.setAttribute(new Attribute("length", Integer.toString(alTmp.arr.size())));
 
 					Element alField = new Element("field");
@@ -166,37 +166,5 @@ public class Serializer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
-
-	// public static void main(String[] args) {
-	// try {
-	// int portNumber = 6666;
-	// ServerSocket serverSocket = new ServerSocket(portNumber);
-	// Socket socket = serverSocket.accept();
-	// // DataInputStream incomingData = new
-	// DataInputStream(socket.getInputStream());
-	// // String receivedMessage = (String) incomingData.readUTF();
-	// // System.out.println("message: " + receivedMessage);
-	//
-	// String outputFile = "C:\\XMLData\\outfile.xml";
-	// File myFile = new File(outputFile);
-	// FileOutputStream fos = new FileOutputStream(myFile);
-	// BufferedOutputStream out = new BufferedOutputStream(fos);
-	// byte[] buffer = new byte[1024];
-	// int count;
-	// InputStream in = socket.getInputStream();
-	// while ((count = in.read(buffer)) > 0) {
-	// byte revisedBuffer[] = new String(buffer).replaceAll("\0",
-	// "").getBytes();
-	// fos.write(revisedBuffer);
-	// }
-	// fos.close();
-	//
-	// serverSocket.close();
-	//
-	// } catch (Exception e) {
-	// System.out.println(e);
-	// }
-	// }
 }

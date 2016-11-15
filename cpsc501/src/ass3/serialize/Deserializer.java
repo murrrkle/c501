@@ -14,37 +14,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 public class Deserializer {
-	public org.jdom2.Document deserialize(Object obj) {
+	public Object deserialize(Document doc) {
 		return null;
-	}
-	
-	static void readXML(){
-		SAXBuilder builder = new SAXBuilder();
-		File xmlFile = new File("C:\\XMLData\\file.xml");	
-		try {
-	
-			Document document = (Document) builder.build(xmlFile);
-			Element rootNode = document.getRootElement();
-			List list = rootNode.getChildren("staff");
-	
-			for (int i = 0; i < list.size(); i++) {
-				
-			   Element node = (Element) list.get(i);
-	
-			   System.out.println("First Name : " + node.getChildText("firstname"));
-			   System.out.println("Last Name : " + node.getChildText("lastname"));
-			   System.out.println("Nick Name : " + node.getChildText("nickname"));
-			   System.out.println("Salary : " + node.getChildText("salary"));
-			   
-			   System.out.println("----------------------");
-			}
-		
-		  } catch (IOException io) {
-			System.out.println(io.getMessage());
-		  } catch (JDOMException jdomex) {
-			System.out.println(jdomex.getMessage());
-		  }
-	
-
 	}
 }
