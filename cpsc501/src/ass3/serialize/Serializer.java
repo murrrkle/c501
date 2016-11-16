@@ -118,8 +118,6 @@ public class Serializer {
 
 				case "ArrListClass":
 					ArrListClass alcTmp = (ArrListClass) objValue;
-
-					entry.setAttribute(new Attribute("length", Integer.toString(alcTmp.arr.size())));
 					Element alField = new Element("field");
 					alField.setAttribute(new Attribute("name", "arr"));
 					alField.setAttribute(new Attribute("declaringclass",
@@ -137,6 +135,7 @@ public class Serializer {
 
 					for (int i = 0; i < alTmp.size(); i++) {
 						Element oacValue = new Element("value");
+						oacValue.setAttribute("index", "" + i);
 						oacValue.setText(Integer.toString(getKey(alTmp.get(i))));
 						entry.addContent(oacValue);
 					}

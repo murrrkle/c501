@@ -7,6 +7,6 @@ public class SimpleArrClass {
 		for (int i = 0; i < 2; i++) {
 			string += arr[i] + ", ";
 		}
-		return string + arr[3] + "]";
+		return string + arr[2] + "]";
 	}
 }
