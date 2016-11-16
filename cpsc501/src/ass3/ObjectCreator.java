@@ -90,7 +90,6 @@ public class ObjectCreator {
 		frameConfig();
 	}
 
-
 	private void init() {
 		main = new Frame();
 		mainBtnListener = new MainButtonListener();
@@ -279,12 +278,9 @@ public class ObjectCreator {
 		public boolean isInteger(String s) {
 			try {
 				Integer.parseInt(s);
-			} catch (NumberFormatException e) {
-				return false;
-			} catch (NullPointerException e) {
+			} catch (NumberFormatException | NullPointerException e) {
 				return false;
 			}
-			// only got here if we didn't return false
 			return true;
 		}
 	}
