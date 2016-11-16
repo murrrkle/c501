@@ -33,12 +33,7 @@ public class Deserializer {
 				}
 			}
 		}
-		// System.out.println(map);
-		// System.out.println(objects);
-		for (Map.Entry<Integer, Object> entry : map.entrySet()) {
-			System.out.println(entry.getValue().getClass().getName() + " " + entry.getValue());
-		}
-		return null;
+		return map;
 	}
 
 	private Object toObject(Element e) throws ClassNotFoundException, InstantiationException, IllegalAccessException,

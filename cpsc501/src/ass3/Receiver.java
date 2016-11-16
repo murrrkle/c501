@@ -3,6 +3,8 @@ package ass3;
 import java.io.File;
 import java.io.IOException;
 import java.util.IdentityHashMap;
+import java.util.Map;
+
 import org.jdom2.Document;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
@@ -22,6 +24,11 @@ public class Receiver {
 		} else {
 			Deserializer dsrl = new Deserializer();
 			IdentityHashMap<Integer, Object> objects = (IdentityHashMap<Integer, Object>) dsrl.deserialize(doc);
+			Inspector inspector = new Inspector();
+			for (Map.Entry<Integer, Object> entry : objects.entrySet()) {
+//				System.out.print(entry.getValue());
+				inspector.inspect(entry.getValue(), false);				
+			}
 		}
 	}
 
