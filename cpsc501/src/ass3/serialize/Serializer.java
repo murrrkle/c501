@@ -91,11 +91,11 @@ public class Serializer {
 					ObjectClass ocTmp = (ObjectClass) objValue;
 
 					Element ocField = new Element("field");
-					ocField.setAttribute(new Attribute("name", "reference"));
+					ocField.setAttribute(new Attribute("name", "object"));
 					ocField.setAttribute(new Attribute("declaringclass",
 							classObj.getField("object").getDeclaringClass().getSimpleName()));
 
-					Element ocValue = new Element("value");
+					Element ocValue = new Element("reference");
 					ocValue.setText(Integer.toString(getKey(ocTmp.object)));
 					ocField.addContent(ocValue);
 
@@ -117,8 +117,6 @@ public class Serializer {
 
 				case "ArrListClass":
 					ArrListClass alTmp = (ArrListClass) objValue;
-
-					entry.setAttribute(new Attribute("length", Integer.toString(alTmp.arr.size())));
 
 					Element alField = new Element("field");
 					alField.setAttribute(new Attribute("name", "arr"));
