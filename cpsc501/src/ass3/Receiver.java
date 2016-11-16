@@ -24,7 +24,7 @@ public class Receiver {
 		} else {
 			Deserializer dsrl = new Deserializer();
 			IdentityHashMap<Integer, Object> objects = (IdentityHashMap<Integer, Object>) dsrl.deserialize(doc);
-			Inspector inspector = new Inspector();
+			Visualizer inspector = new Visualizer();
 			for (Map.Entry<Integer, Object> entry : objects.entrySet()) {
 				inspector.inspect(entry.getValue(), false);				
 			}

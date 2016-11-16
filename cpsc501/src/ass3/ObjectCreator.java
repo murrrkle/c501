@@ -57,7 +57,15 @@ public class ObjectCreator {
 		rightPanel.add(addPanel);
 		rightPanel.add(btnPanel);
 
-		// Button Panel
+		addButtons();
+
+		scrollpane.add(objList);
+		main.add("Center", scrollpane);
+
+		frameConfig();
+	}
+
+	private void addButtons() {
 		Button addSimpleButton = new Button("Add Simple");
 		addSimpleButton.addActionListener(mainBtnListener);
 		addPanel.add(addSimpleButton);
@@ -81,13 +89,6 @@ public class ObjectCreator {
 		Button serializeButton = new Button("Serialize & Send");
 		serializeButton.addActionListener(mainBtnListener);
 		btnPanel.add(serializeButton);
-
-		// Scrollpane
-		scrollpane.add(objList);
-		main.add("Center", scrollpane);
-
-		// Window
-		frameConfig();
 	}
 
 	private void init() {
@@ -366,7 +367,7 @@ public class ObjectCreator {
 			messageLabel = new Label("Choose an object: ");
 			add(messageLabel);
 
-			btnPanel = new Panel(new GridLayout(1, 5));
+			btnPanel = new Panel(new GridLayout(1, 6));
 
 			Button addSimpleButton = new Button("Add Simple");
 			addSimpleButton.addActionListener(btnListener);
@@ -387,6 +388,10 @@ public class ObjectCreator {
 			Button addArrayListButton = new Button("Add ArrayList");
 			addArrayListButton.addActionListener(btnListener);
 			btnPanel.add(addArrayListButton);
+
+			Button addExistingButton = new Button("Add Existing");
+			addExistingButton.addActionListener(btnListener);
+			btnPanel.add(addExistingButton);
 
 			add(btnPanel);
 		}
@@ -415,6 +420,12 @@ public class ObjectCreator {
 				case "Add ArrayList":
 					addArrListClass();
 					okButtonAction();
+					break;
+				case "Add Existing":
+					if (objList.getItemCount() > 0) {
+						addExistingClass();
+						okButtonAction();
+					}
 					break;
 				default:
 					break;
@@ -447,6 +458,35 @@ public class ObjectCreator {
 				putObjectIntoDoc(tmp);
 				objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
 				// dialogPanel.reset();
+			}
+
+			private void addExistingClass() {
+				Panel dialogPanel = new Panel(new GridLayout(2, 1));
+				ScrollPane scrl = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
+				Button okButton = new Button("OK");
+				List existingList = new List();
+				for (int i = 0; i < objList.getItemCount(); i++) {
+					existingList.add(objList.getItem(i));
+				}
+				okButton.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						System.out.println(doc.get(existingList.getSelectedIndex()));
+						obj.object = doc.get(existingList.getSelectedIndex());
+						Window win = SwingUtilities.getWindowAncestor(dialogPanel);
+						win.dispose();
+					}
+				});
+
+				scrl.add(existingList);
+				dialogPanel.add(scrl);
+				dialogPanel.add(okButton);
+
+				dialog = new Dialog(main, "Add Existing Object", ModalityType.APPLICATION_MODAL);
+				dialog.add(dialogPanel);
+				dialog.pack();
+				dialog.setLocationRelativeTo(null);
+				dialog.setVisible(true);
 			}
 
 			private void addSimpleArrClass() {

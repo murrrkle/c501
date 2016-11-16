@@ -2,7 +2,7 @@ package ass3;
 
 import java.lang.reflect.*;
 
-public class Inspector {
+public class Visualizer {
 	public void inspect(Object obj, boolean recursive) {
 		if (obj == null)
 			return;
@@ -48,7 +48,6 @@ public class Inspector {
 
 	private void printFieldInfo(Object obj, boolean recursive, Field f) throws IllegalAccessException {
 		f.setAccessible(true);
-		int modifiers = f.getModifiers();
 
 		System.out.println("Field Name: " + f.getName());
 		System.out.println("Field Type: " + f.getType().getSimpleName());
