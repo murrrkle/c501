@@ -10,26 +10,41 @@ import org.jdom2.Element;
 import java.lang.reflect.*;
 
 public class Deserializer {
+	private IdentityHashMap<Integer, Object> map;
+	List<Element> objects;
+
+	public Deserializer() {
+		map = new IdentityHashMap<Integer, Object>();
+		objects = null;
+	}
+
 	public Object deserialize(Document doc) {
-		IdentityHashMap<Integer, Object> map = new IdentityHashMap<Integer, Object>();
-
 		Element root = doc.getRootElement();
-		List<Element> objects = root.getChildren("object");
+		objects = root.getChildren("object");
 		for (Element e : objects) {
-			try {
-				map.put(Integer.parseInt(e.getAttribute("id").getValue()), toObject(e));
 
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | SecurityException e1) {
+			if (notYetSerialized(e)) {
+				try {					
+					toObject(e);
 
-				System.out.println(e1.getCause());
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+						| SecurityException e1) {
+
+					System.out.println(e1.getCause());
+				}
+			} else {
+				System.out.println("already serialized");
 			}
 		}
-		System.out.println(map);
+//		System.out.println(map);
+//		System.out.println(objects);
+		for (Map.Entry<Integer, Object> entry : map.entrySet()) {
+			System.out.println(entry.getValue());
+		}
 		return null;
 	}
 
-	private Object toObject(Element e)
-			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	private Object toObject(Element e) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		Class classObj = Class.forName("ass3.collection." + e.getAttribute("class").getValue());
 		Object obj = classObj.newInstance();
 
@@ -43,7 +58,15 @@ public class Deserializer {
 				Element field = e.getChildren().get(0);
 				Element fieldValue = field.getChildren().get(0);
 				if (fieldIsReference(fieldValue)) {
-					Integer id = new Integer(e.getAttributeValue("id"));
+					Integer refId = Integer.parseInt(fieldValue.getText());
+					Element tmp = findElementByID(refId);
+					if (notYetSerialized(tmp)) {
+						f.set(obj, toObject(tmp));
+					} else {
+						f.set(obj, map.get(refId));
+//						System.out.println("already added");
+					}
+
 					// System.out.println("I'm an ObjectClass");
 				} else {
 					f.set(obj, Integer.parseInt(fieldValue.getText()));
@@ -51,8 +74,26 @@ public class Deserializer {
 				}
 			}
 		}
-
+		Integer objId = Integer.parseInt(e.getAttribute("id").getValue());
+		map.put(objId, obj);
 		return obj;
+	}
+	
+	private Element findElementByID(int i) {
+		for (Element e : objects) {
+			if (Integer.parseInt(e.getAttributeValue("id")) == i) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	private boolean notYetSerialized(Element e) {
+		for (Map.Entry<Integer, Object> entry : map.entrySet()) {
+			if (entry.getKey() == Integer.parseInt(e.getAttribute("id").getValue()))
+				return false;
+		}
+		return true;
 	}
 
 	private boolean isArray(Element e) {
