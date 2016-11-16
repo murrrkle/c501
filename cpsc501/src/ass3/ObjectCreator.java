@@ -155,7 +155,7 @@ public class ObjectCreator {
 			dialog.setVisible(true);
 			SimpleClass tmp = dialogPanel.getObject();
 			putObjectIntoDoc(tmp);
-			objList.add(tmp.getClass().getSimpleName() + " " + (id - 1) + " " + tmp.value);
+			objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
 		}
 
 		private void addSimpleArray() {
@@ -167,7 +167,7 @@ public class ObjectCreator {
 			dialog.setVisible(true);
 			SimpleArrClass tmp = dialogPanel.getObject();
 			putObjectIntoDoc(tmp);
-			objList.add(tmp.getClass().getSimpleName() + " " + (id - 1) + " " + tmp.arr);
+			objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
 		}
 
 		private void addObjectClass() {
@@ -221,6 +221,8 @@ public class ObjectCreator {
 				public void actionPerformed(ActionEvent e) {
 					putObjectIntoDoc(tmp);
 					objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
+					putObjectIntoDoc(tmp.arr);
+					objList.add(tmp.arr.getClass().getSimpleName() + " " + (id - 1));
 					Window win = SwingUtilities.getWindowAncestor(dialogPanel);
 					win.dispose();
 				}
@@ -461,7 +463,7 @@ public class ObjectCreator {
 				SimpleArrClass tmp = dialogPanel.getObject();
 				obj.object = tmp;
 				putObjectIntoDoc(tmp);
-				objList.add(tmp.getClass().getSimpleName() + " " + (id - 1) + " " + tmp.arr);
+				objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
 			}
 
 			private void addObjectArrClass() {
@@ -496,9 +498,6 @@ public class ObjectCreator {
 						dialog.setLocationRelativeTo(null);
 						dialog.setVisible(true);
 						tmp.arr.add(dialogPanel.getObject().object);
-						// putObjectIntoDoc(dialogPanel.getObject());
-						// objList.add(dialogPanel.getObject().getClass().getSimpleName()
-						// + " " + (id - 1));
 					}
 				});
 				okButton.addActionListener(new ActionListener() {
@@ -507,6 +506,8 @@ public class ObjectCreator {
 						obj.object = tmp;
 						putObjectIntoDoc(tmp);
 						objList.add(tmp.getClass().getSimpleName() + " " + (id - 1));
+						putObjectIntoDoc(tmp.arr);
+						objList.add(tmp.arr.getClass().getSimpleName() + " " + (id - 1));
 						Window win = SwingUtilities.getWindowAncestor(dialogPanel);
 						win.dispose();
 					}

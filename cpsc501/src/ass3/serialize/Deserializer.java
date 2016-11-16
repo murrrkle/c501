@@ -24,7 +24,7 @@ public class Deserializer {
 		for (Element e : objects) {
 
 			if (notYetSerialized(e)) {
-				try {					
+				try {
 					toObject(e);
 
 				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -33,11 +33,11 @@ public class Deserializer {
 					System.out.println(e1.getCause());
 				}
 			} else {
-				System.out.println("already serialized");
+				// System.out.println("already serialized");
 			}
 		}
-//		System.out.println(map);
-//		System.out.println(objects);
+		// System.out.println(map);
+		// System.out.println(objects);
 		for (Map.Entry<Integer, Object> entry : map.entrySet()) {
 			System.out.println(entry.getValue());
 		}
@@ -50,9 +50,25 @@ public class Deserializer {
 
 		Field[] fields = classObj.getDeclaredFields();
 		for (Field f : fields) {
-			if (isArray(e)) {
+			if (isArrayList(e)) {
+
+			} else if (isArray(e)) {
 				List<Element> arrayElements = e.getChildren();
-				// System.out.println("I'm an array");
+				int length = arrayElements.size();
+				Object a = null;
+
+				if (length == 0) {
+					a = Array.newInstance(f.getType(), 0);
+					f.set(obj, a);
+				} else {
+					a = Array.newInstance(f.getType(), length);
+					for (int i = 0; i < length; i++) {
+						Object value = null;
+
+						Array.set(a, i, value);
+						f.set(obj, a);
+					}
+				}
 
 			} else {
 				Element field = e.getChildren().get(0);
@@ -64,13 +80,9 @@ public class Deserializer {
 						f.set(obj, toObject(tmp));
 					} else {
 						f.set(obj, map.get(refId));
-//						System.out.println("already added");
 					}
-
-					// System.out.println("I'm an ObjectClass");
 				} else {
 					f.set(obj, Integer.parseInt(fieldValue.getText()));
-					// System.out.println("I'm a SimpleClass");
 				}
 			}
 		}
@@ -78,7 +90,7 @@ public class Deserializer {
 		map.put(objId, obj);
 		return obj;
 	}
-	
+
 	private Element findElementByID(int i) {
 		for (Element e : objects) {
 			if (Integer.parseInt(e.getAttributeValue("id")) == i) {
@@ -98,6 +110,10 @@ public class Deserializer {
 
 	private boolean isArray(Element e) {
 		return e.getAttribute("length") != null;
+	}
+
+	private boolean isArrayList(Element e) {
+		return e.getAttributeValue("class") == "ArrayList";
 	}
 
 	private boolean fieldIsReference(Element e) {

@@ -3,6 +3,7 @@ package ass3.serialize;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import org.jdom2.Attribute;
@@ -116,20 +117,30 @@ public class Serializer {
 					break;
 
 				case "ArrListClass":
-					ArrListClass alTmp = (ArrListClass) objValue;
+					ArrListClass alcTmp = (ArrListClass) objValue;
 
+					entry.setAttribute(new Attribute("length", Integer.toString(alcTmp.arr.size())));
 					Element alField = new Element("field");
 					alField.setAttribute(new Attribute("name", "arr"));
 					alField.setAttribute(new Attribute("declaringclass",
 							classObj.getField("arr").getDeclaringClass().getSimpleName()));
 
-					for (int i = 0; i < alTmp.arr.size(); i++) {
 						Element alValue = new Element("reference");
-						alValue.setText(Integer.toString(getKey(alTmp.arr.get(i))));
+						alValue.setText(Integer.toString(getKey(alcTmp.arr)));
 						alField.addContent(alValue);
-					}
 
 					entry.addContent(alField);
+					break;
+					
+				case "ArrayList":
+					ArrayList<Object> alTmp = (ArrayList<Object>) objValue;
+
+					for (int i = 0; i < alTmp.size(); i++) {
+						Element oacValue = new Element("value");
+						oacValue.setText(Integer.toString(getKey(alTmp.get(i))));
+						entry.addContent(oacValue);
+					}
+
 					break;
 
 				default:

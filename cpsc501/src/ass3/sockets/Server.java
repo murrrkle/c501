@@ -21,7 +21,7 @@ public class Server {
 			}
 
 			FileOutputStream fos = new FileOutputStream(myFile);
-			byte[] buffer = new byte[1024];
+			byte[] buffer = new byte[4096];
 			InputStream in = socket.getInputStream();
 			while ((in.read(buffer)) > 0) {
 				byte revisedBuffer[] = new String(buffer).replaceAll("\0", "").getBytes();
